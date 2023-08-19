@@ -12,7 +12,7 @@ type InputFieldParams = {
     placeholder: string;
   }
   
-  const TextInputField = (inputFieldParams: InputFieldParams) => {
+  const IntegerInputField = (inputFieldParams: InputFieldParams) => {
 
   return (
     <div className="mb-5">
@@ -23,7 +23,7 @@ type InputFieldParams = {
       {inputFieldParams.label}
     </label>
     <input
-      type="text"
+      type="number"
       name={inputFieldParams.name}
       id={inputFieldParams.id}
       placeholder={inputFieldParams.placeholder}
@@ -36,4 +36,4 @@ type InputFieldParams = {
   );
 };
 
-export default TextInputField;
+export default IntegerInputField;

@@ -2,24 +2,24 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar/navbar";
-import StaffAddNew from "../components/staff/addnew";
-import { StaffTable } from "../components/staff/table";
-import { StaffObj } from "../components/staff/types";
+import TaskAddNew from "../components/task/addnew";
+import { TaskObj, TaskObjExtend } from "../components/task/types";
+import { TaskTable } from "../components/task/table";
 
 
-export default function Staff() {
+export default function Task() {
 
-  const [staffRowData, setStaffRowData] = useState<StaffObj[]>([]);
+  const [taskRowData, setTaskRowData] = useState<TaskObjExtend[]>([]);
 
   useEffect(() => {
     // declare the data fetching function
     const fetchData = async () => {
       const columns = JSON.stringify({ staffid: true })
-      const staff_details = await fetch(
-        "api/staff",
+      const task_details = await fetch(
+        "api/task",
       );
-      const res = await staff_details.json();
-      setStaffRowData(res.staff);
+      const res = await task_details.json();
+      setTaskRowData(res.tasks);
       console.log("res",res,)
     };
 
@@ -31,16 +31,15 @@ export default function Staff() {
       <Navbar />
       <div className="flex items-center justify-center p-4">
         <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
-          Staff
+          Tasks
         </h1>
-        <StaffAddNew buttonName="Add New" />
+        <TaskAddNew buttonName="Add New" />
       </div>
       <div>
-        {staffRowData && (
-          <StaffTable staffRowData={staffRowData} />
+        {taskRowData && (
+          <TaskTable taskRowData={taskRowData} />
         )}
       </div>
     </div>
   );
 }
-

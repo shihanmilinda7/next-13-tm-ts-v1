@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Modal from 'react-modal'
-import InputField from '../common-comp/input-fields/text-input-fields';
+import TextInputField from '../common-comp/input-fields/text-input-fields';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import { CategoryDetailObj, CategoryObj } from './types';
 import CategoryInputField from './categoty-input-field';
@@ -143,7 +143,7 @@ const CategoryAddNew = (params: ParamTypes) => {
             </button>
             {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
             <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
-                {/* <InputField
+                {/* <TextInputField
           id="staffid"
           name="staffid"
           type="hidden"
@@ -160,7 +160,7 @@ const CategoryAddNew = (params: ParamTypes) => {
 
                         <div className="-mx-3 flex flex-wrap">
                             <div className="w-full px-3">
-                                <InputField
+                                <TextInputField
                                     label="Category Name"
                                     id="categoryname"
                                     name="categoryname"

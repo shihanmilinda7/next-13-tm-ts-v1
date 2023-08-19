@@ -44,6 +44,6 @@ model tasks{
   clientname String   
   categoryid Int
   location String
-  visitcount String
+  visitcount Int
   status String
 }

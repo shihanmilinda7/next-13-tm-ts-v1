@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Modal from 'react-modal'
-import InputField from '../common-comp/input-fields/text-input-fields';
+import TextInputField from '../common-comp/input-fields/text-input-fields';
 import { StaffObj } from './types';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 
@@ -132,7 +132,7 @@ const StaffAddNew = (params: ParamTypes) => {
       </button>
       {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
       <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
-        {/* <InputField
+        {/* <TextInputField
           id="staffid"
           name="staffid"
           type="hidden"
@@ -147,7 +147,7 @@ const StaffAddNew = (params: ParamTypes) => {
           <div className="mx-auto w-full max-w-[550px]">
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="Name"
                   id="staffname"
                   name="staffname"
@@ -158,7 +158,7 @@ const StaffAddNew = (params: ParamTypes) => {
                 />
               </div>
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="Contract Type"
                   id="contracttype"
                   name="contracttype"
@@ -172,7 +172,7 @@ const StaffAddNew = (params: ParamTypes) => {
 
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3">
-                <InputField
+                <TextInputField
                   label="Username"
                   id="username"
                   name="username"
@@ -186,7 +186,7 @@ const StaffAddNew = (params: ParamTypes) => {
 
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="Contact No"
                   id="contactno"
                   name="contactno"
@@ -197,7 +197,7 @@ const StaffAddNew = (params: ParamTypes) => {
                 />
               </div>
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="NIC"
                   id="nic"
                   name="nic"
@@ -210,7 +210,7 @@ const StaffAddNew = (params: ParamTypes) => {
             </div>
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="Password"
                   id="password"
                   name="password"
@@ -221,7 +221,7 @@ const StaffAddNew = (params: ParamTypes) => {
                 />
               </div>
               <div className="w-full px-3 sm:w-1/2">
-                <InputField
+                <TextInputField
                   label="Confirm Password"
                   id="confirmpassword"
                   name="confirmpassword"

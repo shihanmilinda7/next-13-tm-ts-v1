@@ -8,12 +8,14 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     let res;
     // const selectedCol = searchParams.get('page');
-    console.log("searchParams", searchParams)
+    // console.log("searchParams", searchParams)
     const selectedColumns: string = searchParams.get("columns") ?? "";
     let selectedColumnsObj: Prisma.staffSelect<DefaultArgs> | null = null;
     if (selectedColumns) {
+        console.log("selectedColumnsObj",selectedColumnsObj,)
         selectedColumnsObj = JSON.parse(selectedColumns);
     }
+    console.log("selectedColumnsObj11",selectedColumns,)
 
     // const staff = await prisma.staff.findMany({
     // });
