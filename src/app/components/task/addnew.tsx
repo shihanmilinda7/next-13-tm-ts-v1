@@ -7,7 +7,7 @@ import { TaskObj } from './types';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import SelectBoxInputField from '../common-comp/input-fields/select-input-field';
 import { StaffObj } from '../staff/types';
-import { CategoryObj } from '../category/types';
+import { CategoryDetailObj, CategoryObj } from '../category/types';
 import IntegerInputField from '../common-comp/input-fields/number-input-field';
 
 type ParamTypes = {
@@ -33,7 +33,10 @@ const TaskAddNew = (params: ParamTypes) => {
     value: "no", name: "No Data"
   }])
 
+  const [fetchedCategoryDetailsData, setFetchedCategoryDetailsData] = useState([])
+
   const [showDelButton, setShowDelButton] = useState(params.delButton);
+  const [showCatDetails, setShowCatDetails] = useState(false)
 
   const customStyles = {
     overlay: {
@@ -53,7 +56,34 @@ const TaskAddNew = (params: ParamTypes) => {
   useEffect(() => {
     getStaffValues();
     getCategoryValues();
+    if (categoryid) {
+      fetchCatDetailsData(categoryid);
+  }
   }, []);
+
+  //show category details
+  const showCategoryDeatils = () => {
+    setShowCatDetails(!showCatDetails);
+  }
+
+  //fetch category details as sel category data
+  const fetchCatDetailsData = async (categoryid: string | number) => {
+    const fetchData = async () => {
+      const all_cat_details = await fetch(
+        "api/category/get_cat_as_catid",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ categoryid }),
+        }
+      );
+      const res = await all_cat_details.json();
+      setFetchedCategoryDetailsData(res.categoriesData);
+      // setStaffid(selRowData?.staffid ?? "");
+    };
+    // call the function
+    fetchData().catch(console.error);
+  }
 
   //get staff details
   const getStaffValues = () => {
@@ -96,7 +126,7 @@ const TaskAddNew = (params: ParamTypes) => {
   //change event for category select
   const categoryOnSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategoryid(e.target.value);
-    // fetchCatDetailsData(e.target.value);
+    fetchCatDetailsData(e.target.value);
   }
 
   const submitButtonHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -138,7 +168,7 @@ const TaskAddNew = (params: ParamTypes) => {
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({  taskid, staffid, clientname, categoryid, location, visitcount }),
+        body: JSON.stringify({ taskid, staffid, clientname, categoryid, location, visitcount }),
       }
     );
 
@@ -218,7 +248,17 @@ const TaskAddNew = (params: ParamTypes) => {
                   onSelect={(e) => categoryOnSelect(e)}
                 />
               </div>
-              <div className="-mx-3 flex flex-wrap">
+              <h1 className="text-indigo-800 font-semiboldd hover:font-bold cursor-pointer mb-4" onClick={showCategoryDeatils}>{showCatDetails ? "Show Less" : "Show More"}</h1>
+              <div className={showCatDetails ? "grid grid-cols-2 gap-4 content-start w-full  px-3" : "flex hidden"}>
+                {fetchedCategoryDetailsData.map((data:CategoryDetailObj, index) => (
+                   <input 
+                   type="text"
+                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                   value = {data.categorydetailname}
+                   />
+                ))}
+              </div>
+              <div className="-mx-3 flex flex-wrap px-3">
                 <div className="w-full px-3 sm:w-3/4">
                   <TextInputField
                     label="Location"

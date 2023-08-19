@@ -9,30 +9,31 @@ export default function Dashboard() {
 
     useEffect(() => {
         // declare the data fetching function
-        // const fetchData = async () => {
-        //     const task_details = await fetch(
-        //         "api/task_routers/get_sel_task_details",
-        //         {
-        //             method: "POST",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({ selectedColumns: { taskid: true, clientname: true, location: true, categoryid: true }, staffid: "1" }),
-        //         }
-        //     );
-        //     const res = await task_details.json();
-        //     setTaskData(res.tasks);
-        // };
-        // // call the function
-        // fetchData().catch(console.error);
+        const fetchData = async () => {
+            const task_details = await fetch(
+                "api/task/get_sel_task_details",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ selectedColumns: { taskid: true, clientname: true, location: true, categoryid: true }, staffid: "1" }),
+                }
+            );
+            const res = await task_details.json();
+            setTaskData(res.tasks);
+        };
+        // call the function
+        fetchData().catch(console.error);
     }, []);
 
-    // const taskClickEvent = (task) => {
-    //     // const taskid = task["taskid"]
-    //     // console.log("taskid",task["taskid"])
-    //     // const taskParam = task["taskid"]+"##"+task["clientname"]+"##"+task["categoryid"]
+    const taskClickEvent = (task) => {
+        console.log("task",task,)
+        // const taskid = task["taskid"]
+        // console.log("taskid",task["taskid"])
+        // const taskParam = task["taskid"]+"##"+task["clientname"]+"##"+task["categoryid"]
 
-    //     // window.location.href = "/task_detail_staff/"+taskParam
-    //     window.location.href = "/task_detail_staff/" + { task["taskid"], task["categoryid"]}
-    // }
+        // window.location.href = "/task_detail_staff/"+taskParam
+        // window.location.href = "/task_detail_staff/" + { task["taskid"], task["categoryid"]}
+    }
 
     return (
         <div>
@@ -42,6 +43,46 @@ export default function Dashboard() {
             {/* <Webcam/> */}
 
             <div className="flex flex-wrap pt-4">
+
+            <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+            <div className="flex-auto p-4">
+              <div className="flex flex-wrap">
+                <div className="relative w-full pr-4 max-w-full flex-grow flex-1 flex-col">
+                  <h4 className="text-indigo-900 uppercase text-2xl mb-4">Assigned Tasks</h4>
+                  <div className="flex flex-col">
+                    {taskData.map((task, index) => (
+                      <div className=" border-b-2 cursor-pointer border-indigo-700" onClick={()=>taskClickEvent(task)}>
+                        <h5 className="font-semibold text-xl text-blueGray-700">{task["clientname"]}</h5>
+                        {/* <i className=	"fas fa-map-marker-alt"></i> */}
+                        <h5 className="font-semibold text-sm text-blueGray-700">{task["location"]}</h5>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="relative w-auto pl-4 flex-initial">
+                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-green-500">
+                    <i className="fas fa-chart-bar">{JSON.stringify(taskData.length)}</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,7 +174,7 @@ export default function Dashboard() {
     );
 }
 
-// <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+// {/* <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
 //           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
 //             <div className="flex-auto p-4">
 //               <div className="flex flex-wrap">
@@ -162,4 +203,4 @@ export default function Dashboard() {
 //               {/* <span className="whitespace-nowrap"> Since last month </span></p> */}
 //             </div>
 //           </div>
-//         </div>
+//         </div> */}
