@@ -1,0 +1,2 @@
+GET http://localhost:3000/api/staff HTTP/1.1
+
