@@ -33,24 +33,60 @@ export async function POST(request: Request) {
     const { staffname, contracttype, contactno, nic, password, username } = await request.json();
     let message: string = "SUCCESS"
     try {
-        const staff = await prisma.staff.create({
-            data: {
-                staffname,
-                contracttype,
-                contactno,
-                nic,
-            },
-        });
-
-        if (staff.staffid) {
-            await prisma.users.create({
+        await prisma.$transaction(async (tx) => {
+            // 1. addnew staff .
+            const staff = await tx.staff.create({
                 data: {
-                    staffid: staff.staffid,
+                    staffname,
+                    contracttype,
+                    contactno,
+                    nic,
+                },
+            });
+
+            // 2. Verify staff enterd
+            if (!staff.staffid) {
+                throw new Error(`Staff not enterd`)
+            }
+
+            const headerId: number = staff.staffid
+
+            // 3. addnew user
+           if (staff.staffid) {
+            await tx.users.create({
+                data: {
+                    staffid: headerId,
                     username,
                     password
                 },
             });
         }
+
+            return ""
+        })
+
+
+
+
+
+        // const staff = await prisma.staff.create({
+        //     data: {
+        //         staffname,
+        //         contracttype,
+        //         contactno,
+        //         nic,
+        //     },
+        // });
+
+        // if (staff.staffid) {
+        //     await prisma.users.create({
+        //         data: {
+        //             staffid: staff.staffid,
+        //             username,
+        //             password
+        //         },
+        //     });
+        // }
     } catch (error) {
         console.error('Error adding new staff:', error);
         message = "FAIL"
