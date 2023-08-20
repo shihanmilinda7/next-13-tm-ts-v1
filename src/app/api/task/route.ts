@@ -8,9 +8,17 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     let res;
+    
+    // const staffid: string = searchParams.get("staffid") ?? "";
+    // let selectedColumnsObj: Prisma.staffSelect<DefaultArgs> | null = null;
+
+
+    // const staff = await prisma.tasks.findMany({
+    //     select: selectedColumnsObj,
+    // });
 
     // const tasks = await prisma.tasks.findMany({});
-    const rawQuery = Prisma.sql`SELECT t.*,s.staffname,c.categoryname FROM tasks AS t LEFT JOIN staff AS s ON t.staffid = s.staffid INNER JOIN categories AS c ON t.categoryid = c.categoryid`;
+    const rawQuery = Prisma.sql`SELECT t.*,s.staffname,c.categoryname FROM tasks AS t LEFT JOIN staff AS s ON t.staffid = s.staffid LEFT JOIN categories AS c ON t.categoryid = c.categoryid`;
     const tasks : TaskObj[] = await prisma.$queryRaw(rawQuery);
 
     if (tasks.length > 0) {
@@ -90,3 +98,23 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json(message)
 }
+
+// export async function GET(request: Request) {
+//     const { searchParams } = new URL(request.url)
+//     let res;
+    
+//     const staffid: string = searchParams.get("staffid") ?? "";
+//     console.log(searchParams,staffid);
+
+
+//     // const tasks = await prisma.tasks.findMany({});
+//     const rawQuery = Prisma.sql`SELECT t.*,s.staffname,c.categoryname FROM tasks AS t LEFT JOIN staff AS s ON t.staffid = s.staffid INNER JOIN categories AS c ON t.categoryid = c.categoryid`;
+//     const tasks : TaskObj[] = await prisma.$queryRaw(rawQuery);
+
+//     if (tasks.length > 0) {
+//         res = { message: "SUCCESS", tasks }
+//     } else {
+//         res = { message: "FAIL" }
+//     }
+//     return NextResponse.json(res)
+// }

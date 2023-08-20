@@ -5,3 +5,9 @@ export type StaffObj = {
     contactno?:string;   
     nic?:string;
 }
+
+export type UserType = {
+    userid?: number;
+    staffid?:number;
+    username?: string; 
+}

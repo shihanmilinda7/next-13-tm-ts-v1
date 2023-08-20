@@ -2,10 +2,49 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar/navbar";
+import { useGlobalContext } from "../globalContext/store";
+
+type TaskDashBoardObj = {
+    taskid?:number;
+    location?:string;   
+    clientname?:string ;  
+    categoryid?:number;   
+    categoryname?: string;
+}
 
 export default function Dashboard() {
 
-    const [taskData, setTaskData] = useState([]);
+  const [taskData, setTaskData] = useState<TaskDashBoardObj[]>([]);
+  const { userId, setUserId, data, setData } = useGlobalContext();
+    // const [taskData, setTaskData] = useState([]);
+    const [staffid, setStaffid] = useState(data?.[0]?.staffid)
+
+    console.log("userId",userId,)
+    console.log("data",data?.[0]?.staffid)
+    useEffect(() => {
+        // declare the data fetching function
+        const fetchData = async () => {
+            const columns = JSON.stringify({ staffid: true })
+            const task_details = await fetch(
+                "api/task/get_task_as_staffid?staffid="+staffid,
+            );
+            const res = await task_details.json();
+            setTaskData(res.tasks);
+            // console.log("res", res,)
+        };
+
+        // call the function
+        fetchData().catch(console.error);
+    }, []);
+
+    const taskClickEvent = (task:TaskDashBoardObj) => {
+        console.log("task",task,)
+        // const taskid = task["taskid"]
+        // console.log("taskid",task["taskid"])
+        // const taskParam = task["taskid"]+"##"+task["clientname"]+"##"+task["categoryid"]
+        window.location.href = "/task/task-submit?taskid="+task.taskid+"&clientname="+task.clientname+"&location="+task.location+"&categoryid="+task.categoryid+"&categoryname="+task.categoryname
+        // window.location.href = "/task_detail_staff/" + { task["taskid"], task["categoryid"]}
+    }
 
     // useEffect(() => {
     //     // declare the data fetching function
@@ -25,16 +64,6 @@ export default function Dashboard() {
     //     fetchData().catch(console.error);
     // }, []);
 
-    // const taskClickEvent = (task) => {
-    //     console.log("task",task,)
-    //     // const taskid = task["taskid"]
-    //     // console.log("taskid",task["taskid"])
-    //     // const taskParam = task["taskid"]+"##"+task["clientname"]+"##"+task["categoryid"]
-
-    //     // window.location.href = "/task_detail_staff/"+taskParam
-    //     // window.location.href = "/task_detail_staff/" + { task["taskid"], task["categoryid"]}
-    // }
-
     return (
         <div>
             <Navbar />
@@ -43,7 +72,30 @@ export default function Dashboard() {
             {/* <Webcam/> */}
 
             <div className="flex flex-wrap pt-4">
-
+                <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+                    <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+                        <div className="flex-auto p-4">
+                            <div className="flex flex-wrap">
+                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1 flex-col">
+                                    <h4 className="text-indigo-900 uppercase text-2xl mb-4">Assigned Tasks</h4>
+                                    <div className="flex flex-col">
+                                        {taskData.map((task, index) => (
+                                            <div key={task.taskid} className=" border-b-2 cursor-pointer border-indigo-700" onClick={() => taskClickEvent(task)}>
+                                                <h5 className="font-semibold text-xl text-blueGray-700">{task["clientname"]}</h5>
+                                                <h5 className="font-semibold text-sm text-blueGray-700">{task["location"]}</h5>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="relative w-auto pl-4 flex-initial">
+                                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-green-500">
+                                        <i className="fas fa-chart-bar">{JSON.stringify(taskData.length)}</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
                     <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">

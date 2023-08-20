@@ -70,12 +70,7 @@ const TaskAddNew = (params: ParamTypes) => {
   const fetchCatDetailsData = async (categoryid: string | number) => {
     const fetchData = async () => {
       const all_cat_details = await fetch(
-        "api/category/get_cat_as_catid",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ categoryid }),
-        }
+        "api/category/get_cat_as_catid?categoryid="+categoryid,
       );
       const res = await all_cat_details.json();
       setFetchedCategoryDetailsData(res.categoriesData);
@@ -214,7 +209,7 @@ const TaskAddNew = (params: ParamTypes) => {
         {params.buttonName}
       </button>
       {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
+      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
         <div className="pl-12 pb-1">
           <h1 className="text-2xl uppercase text-indigo-800">Create Task</h1>
         </div>
@@ -252,6 +247,7 @@ const TaskAddNew = (params: ParamTypes) => {
               <div className={showCatDetails ? "grid grid-cols-2 gap-4 content-start w-full  px-3" : "flex hidden"}>
                 {fetchedCategoryDetailsData.map((data:CategoryDetailObj, index) => (
                    <input 
+                   key={data.categorydetailid}
                    type="text"
                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                    value = {data.categorydetailname}

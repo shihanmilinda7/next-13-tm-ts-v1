@@ -27,7 +27,7 @@ export const CategoryTable = ({ categoryRowData }: { categoryRowData: CategoryOb
                                 <td className="text-left py-3 px-4">{tableRow.categoryname}</td>
                                 <td className="text-left py-3 px-4">
                                     {tableRow.categoryValues && tableRow.categoryValues.map((catValue) => (
-                                        <ul>
+                                        <ul key={catValue.categorydetailid}>
                                             <li>{catValue.categorydetailname}</li>
                                         </ul>
                                     ))}

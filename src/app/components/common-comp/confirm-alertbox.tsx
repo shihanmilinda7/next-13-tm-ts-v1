@@ -39,6 +39,7 @@ const ConfirmAlertbox = ({ buttonName, leftButtonAction, title, description }:Pr
                 isOpen={showAlert}
                 onRequestClose={() => setShowAlert(false)}
                 style={customStyles}
+                ariaHideApp={false}
             >
                 <div>
                     <h1 className="text-2xl font-extrabold">{title}</h1>

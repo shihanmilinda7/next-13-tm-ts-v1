@@ -1,16 +1,33 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import React, { useState } from "react";
+import { useGlobalContext } from "@/app/globalContext/store";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+// import { StaffObj } from "../staff/types";
+import { ApiResult } from "@/app/types";
+import { UserType } from "../staff/types";
 // import Toast from "./toast";
 
 const Login = () => {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
+  const [isLoggedIn, setIsLoggedIn] =useState(false)
+  const [user, setUser] =useState<UserType>()
 
+  const { userId, setUserId, data, setData } = useGlobalContext();
+
+  const router = useRouter();
   //   const [showAlert, setShowAlert] = useState(false);
 
-  const login = async (e: React.FormEvent) => {
+  // useEffect(() => {
+  //   console.log("user Obj",user,)
+  //   setUserId(user?.username ?? "");
+  //     setData([
+  //       { userid: user?.userid, staffid : user?.staffid, username : user?.username }, 
+  //     ]);
+  //   },[isLoggedIn]);
+
+  const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const user_login = await fetch("/api/login", {
       method: "POST",
@@ -18,15 +35,31 @@ const Login = () => {
       body: JSON.stringify({ username, password }),
     });
 
-    const res = await user_login.json();
-    console.log(res.message);
+    const res = await user_login.json()  as ApiResult;
+
+    const tmpUser = res.data[0] as UserType;
+    setUser(tmpUser);
+    // console.log(res.message);
+    // console.log(staffObject);
+    // console.log(res.data[0]);
+    // console.log(tmpUser);
 
     if (res.message == "SUCCESS") {
+      console.log("user",user,)
+      setIsLoggedIn(true)
+      setUserId(tmpUser.username ?? "Guest User");
+      // setUserId(user?.username ?? "");
+      setData([
+        { userid: tmpUser?.userid, staffid : tmpUser?.staffid, username : tmpUser?.username }, 
+      ]);
+      // setData([
+      //   { userid: user?.userid, staffid : user?.staffid, username : user?.username }, 
+      // ]);
+      router.push('/dashboard')
       // console.log("res",res,)
-      window.location.href = "/dashboard"
     } else {
       // console.log("res",res,)
-      window.location.href = "/"
+      router.push('/')
     }
     return res;
   };
@@ -36,7 +69,7 @@ const Login = () => {
         <div className="sm:w-1/2 xl:w-3/5 h-full hidden md:flex flex-auto items-center justify-center p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative">
           <div className="absolute bg-gradient-to-b from-indigo-600 to-blue-500 opacity-75 inset-0 z-0"></div>
           <div className="w-full  max-w-md z-10">
-            <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">Next Generation Project Monitering</div>
+            <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">Next Generation Project Monitering </div>
             <div className="sm:text-sm xl:text-md text-gray-200 font-normal"> The Project Monitoring Web App is a powerful tool designed to streamline and enhance the process of overseeing and managing projects. It provides real-time visibility into project progress, performance, and key metrics, enabling project managers and stakeholders to make informed decisions and take timely actions. The web app offers a user-friendly interface and a range of features to facilitate efficient project monitoring.</div>
           </div>
           <ul className="circles">
@@ -60,7 +93,7 @@ const Login = () => {
               </h2>
               <p className="mt-2 text-sm text-gray-500">Please sign in to your account</p>
             </div>
-            <form className="mt-8 space-y-6" onSubmit={login} >
+            <div className="mt-8 space-y-6" >
               <div className="relative">
                 <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">Username</label>
                 <input
@@ -98,14 +131,15 @@ const Login = () => {
               </div>
               <div>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={login}
                   className="w-full flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-4  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500">
                   Sign in
                 </button>
                 {/* {showAlert && (
                   < Toast description ="Invalid Email or Password !" style="bg-red-500 hover:bg-red-600" setShowAlert={setShowAlert}/>)} */}
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

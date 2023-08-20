@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         },
     });
     if (users.length > 0) {
-        res = { message: "SUCCESS", users }
+        res = { message: "SUCCESS", data :users }
     } else {
         res = { message: "FAIL" }
     }

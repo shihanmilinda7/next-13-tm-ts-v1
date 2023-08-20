@@ -71,19 +71,19 @@ const CategoryAddNew = (params: ParamTypes) => {
     //update category action
     const update = async () => {
         const res_update_cat = await fetch(
-          "api/category",
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ categoryid, categoryname, categoryValues }),
-          }
+            "api/category",
+            {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ categoryid, categoryname, categoryValues }),
+            }
         );
 
         const res = await res_update_cat.json();
 
         if (res == "SUCCESS") {
-          setIsOpen(false);
-          window.location.href = "/category"
+            setIsOpen(false);
+            window.location.href = "/category"
         } else { }
 
         return res;
@@ -93,22 +93,22 @@ const CategoryAddNew = (params: ParamTypes) => {
     //delete category action
     const deleteAction = async () => {
         if (categoryid) {
-          const res_del_cat = await fetch(
-            "api/category",
-            {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ categoryid, categoryValues }),
-            }
-          );
+            const res_del_cat = await fetch(
+                "api/category",
+                {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ categoryid, categoryValues }),
+                }
+            );
 
-          const res = await res_del_cat.json();
-          if (res == "SUCCESS") {
-            setIsOpen(false);
-            window.location.href = "/category"
-          } else { }
+            const res = await res_del_cat.json();
+            if (res == "SUCCESS") {
+                setIsOpen(false);
+                window.location.href = "/category"
+            } else { }
         } else {
-          window.location.href = "/category"
+            window.location.href = "/category"
         }
     }
 
@@ -142,7 +142,7 @@ const CategoryAddNew = (params: ParamTypes) => {
                 {params.buttonName}
             </button>
             {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
-            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
+            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
                 {/* <TextInputField
           id="staffid"
           name="staffid"
@@ -180,15 +180,17 @@ const CategoryAddNew = (params: ParamTypes) => {
                         </div>
                         <div className="grid grid-cols-2 gap-4 content-start w-full px-3">
                             {categoryValues.map((categoryValue: CategoryDetailObj, index: number) => (
-                                <CategoryInputField
-                                    id="phototype"
-                                    name="phototype"
-                                    value={categoryValue.categorydetailname}
-                                    onChange={handleCatValueChange}
-                                    index={index}
-                                    deleteInputField={deleteInputField}
-                                    deleteCategoryInputField={true}
-                                />
+                                <div key={categoryValue.categorydetailid}>
+                                    <CategoryInputField
+                                        id="phototype"
+                                        name="phototype"
+                                        value={categoryValue.categorydetailname}
+                                        onChange={handleCatValueChange}
+                                        index={index}
+                                        deleteInputField={deleteInputField}
+                                        deleteCategoryInputField={true}
+                                    />
+                                </div>
                             ))}
                         </div>
                         <div className="flex">

@@ -35,7 +35,7 @@ const StaffAddNew = (params: ParamTypes) => {
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
+      transform: 'translate(-50%, -50%)'
     }
   }
 
@@ -131,7 +131,7 @@ const StaffAddNew = (params: ParamTypes) => {
         {params.buttonName}
       </button>
       {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
+      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
         {/* <TextInputField
           id="staffid"
           name="staffid"
