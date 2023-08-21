@@ -5,23 +5,29 @@ import Modal from 'react-modal'
 import TextInputField from '../common-comp/input-fields/text-input-fields';
 import { StaffObj } from './types';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
+import { useRouter } from 'next/navigation';
+
 
 type ParamTypes = {
   buttonName: string;
   selRowData?: StaffObj;
   delButton?: boolean;
+  setReloadTable?: () => void;
 }
 
 const StaffAddNew = (params: ParamTypes) => {
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false)
   const [staffid, setStaffid] = useState(params.selRowData?.staffid ?? "");
   const [staffname, setStaffname] = useState(params.selRowData?.staffname ?? "");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(params.selRowData?.username ?? "");
   const [contracttype, setContracttype] = useState(params.selRowData?.contracttype ?? "");
   const [contactno, setContactno] = useState(params.selRowData?.contactno ?? "");
   const [nic, setNic] = useState(params.selRowData?.nic ?? "");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
+  const [password, setPassword] = useState(params.selRowData?.password ?? "");
+  const [confirmpassword, setConfirmpassword] = useState(params.selRowData?.password ?? "");
+  const [userid, setUserid] = useState(params.selRowData?.userid ?? "");
 
   const [showDelButton, setShowDelButton] = useState(params.delButton);
 
@@ -67,7 +73,11 @@ const StaffAddNew = (params: ParamTypes) => {
 
       if (res == "SUCCESS") {
         setIsOpen(false);
-        window.location.href = "/staff"
+        if (params.setReloadTable) {
+          params.setReloadTable();
+        }
+        // window.location.href = "/staff"
+        router.push("/staff");
       } else { }
 
       return res;
@@ -81,24 +91,30 @@ const StaffAddNew = (params: ParamTypes) => {
 
   //update staff action
   const update = async () => {
-    const responseUpdateStaff = await fetch(
-      "api/staff",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ staffid, staffname, contracttype, contactno, nic, password, username }),
-      }
-    );
+    if (password == confirmpassword) {
+      const responseUpdateStaff = await fetch(
+        "api/staff",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username }),
+        }
+      );
 
-    const res = await responseUpdateStaff.json();
+      const res = await responseUpdateStaff.json();
 
-    if (res == "SUCCESS") {
-      setIsOpen(false);
-      window.location.href = "/staff"
-    } else { }
+      if (res == "SUCCESS") {
+        setIsOpen(false);
+        if (params.setReloadTable) {
+          params.setReloadTable();
+        }
+        // 
+        // window.location.href = "/staff"
+        router.push("/staff");
+      } else { }
 
-    return res;
-
+      return res;
+    }
   };
 
   const deleteAction = async () => {
@@ -108,17 +124,25 @@ const StaffAddNew = (params: ParamTypes) => {
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ staffid }),
+          body: JSON.stringify({ staffid, userid }),
         }
       );
 
       const res = await responseDelStaff.json();
       if (res == "SUCCESS") {
         setIsOpen(false);
-        window.location.href = "/staff"
+        if (params.setReloadTable) {
+          params.setReloadTable();
+        }
+        // window.location.href = "/staff"
+        router.push("/staff");
       } else { }
     } else {
-      window.location.href = "/staff"
+      // window.location.href = "/staff"
+      if (params.setReloadTable) {
+        params.setReloadTable();
+      }
+      router.push("/staff");
     }
   }
 

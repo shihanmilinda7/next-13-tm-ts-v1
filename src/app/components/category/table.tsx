@@ -2,7 +2,7 @@ import CategoryAddNew from "./addnew";
 import { CategoryObj } from "./types";
 
 
-export const CategoryTable = ({ categoryRowData }: { categoryRowData: CategoryObj[] }) => {
+export const CategoryTable = ({ categoryRowData,setReloadTable }: { categoryRowData: CategoryObj[],setReloadTable: ()=> void }) => {
 
     const tableHeads = ["#", "Category Name", "Photo Types", ""];
     console.log("ddd", categoryRowData,)
@@ -32,7 +32,7 @@ export const CategoryTable = ({ categoryRowData }: { categoryRowData: CategoryOb
                                         </ul>
                                     ))}
                                 </td>
-                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><CategoryAddNew buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
+                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><CategoryAddNew setReloadTable={setReloadTable} buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
                             </tr>
                         ))}
                     </tbody>

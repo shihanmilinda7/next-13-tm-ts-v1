@@ -10,6 +10,11 @@ import { CategoryObj } from "../components/category/types";
 export default function Categoty() {
 
   const [categoryRowData, setCategoryRowData] = useState<CategoryObj[]>([]);
+  const [reloadTable, setReloadTable] = useState(false);
+
+  const toggleReloadTable = () =>{
+    setReloadTable((prv:boolean)=> !prv)
+  }
 
   useEffect(() => {
     // declare the data fetching function
@@ -25,7 +30,7 @@ export default function Categoty() {
 
     // call the function
     fetchData().catch(console.error);
-  }, []);
+  }, [reloadTable]);
   return (
     <div>
       <Navbar />
@@ -33,11 +38,11 @@ export default function Categoty() {
         <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
           Category
         </h1>
-        <CategoryAddNew buttonName="Add New" />
+        <CategoryAddNew buttonName="Add New" setReloadTable={toggleReloadTable}/>
       </div>
       <div>
         {categoryRowData && (
-          <CategoryTable categoryRowData={categoryRowData} />
+          <CategoryTable categoryRowData={categoryRowData} setReloadTable={toggleReloadTable}/>
         )}
       </div>
     </div>

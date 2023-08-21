@@ -6,14 +6,19 @@ import TextInputField from '../common-comp/input-fields/text-input-fields';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import { CategoryDetailObj, CategoryObj } from './types';
 import CategoryInputField from './categoty-input-field';
+import { useRouter } from 'next/navigation';
 
 type ParamTypes = {
     buttonName: string;
     selRowData?: CategoryObj;
     delButton?: boolean;
+    setReloadTable?: ()=> void;
+
 }
 
 const CategoryAddNew = (params: ParamTypes) => {
+  const router = useRouter();
+
     const [isOpen, setIsOpen] = useState(false)
 
     const [categoryid, setCategoryid] = useState(params.selRowData?.categoryid ?? "");
@@ -61,7 +66,10 @@ const CategoryAddNew = (params: ParamTypes) => {
 
         if (res == "SUCCESS") {
             setIsOpen(false);
-            window.location.href = "/category"
+            if( params.setReloadTable){
+                params.setReloadTable();
+              }
+              router.push("/category")
         } else { }
 
         return res;
@@ -83,7 +91,11 @@ const CategoryAddNew = (params: ParamTypes) => {
 
         if (res == "SUCCESS") {
             setIsOpen(false);
-            window.location.href = "/category"
+            if( params.setReloadTable){
+                params.setReloadTable();
+              }
+              router.push("/category")
+
         } else { }
 
         return res;
@@ -105,10 +117,17 @@ const CategoryAddNew = (params: ParamTypes) => {
             const res = await res_del_cat.json();
             if (res == "SUCCESS") {
                 setIsOpen(false);
-                window.location.href = "/category"
+                if( params.setReloadTable){
+                    params.setReloadTable();
+                  }
+                  router.push("/category")
+
             } else { }
         } else {
-            window.location.href = "/category"
+            if( params.setReloadTable){
+                params.setReloadTable();
+              }
+              router.push("/category")
         }
     }
 

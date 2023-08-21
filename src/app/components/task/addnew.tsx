@@ -9,15 +9,18 @@ import SelectBoxInputField from '../common-comp/input-fields/select-input-field'
 import { StaffObj } from '../staff/types';
 import { CategoryDetailObj, CategoryObj } from '../category/types';
 import IntegerInputField from '../common-comp/input-fields/number-input-field';
+import { useRouter } from 'next/navigation';
 
 type ParamTypes = {
   buttonName: string;
   selRowData?: TaskObj;
   delButton?: boolean;
+  setReloadTable?: ()=> void;
 }
 
 const TaskAddNew = (params: ParamTypes) => {
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter();
 
   const [taskid, setTaskid] = useState(params.selRowData?.taskid ?? "");
   const [staffid, setStaffid] = useState(params.selRowData?.staffid ?? "");
@@ -149,7 +152,10 @@ const TaskAddNew = (params: ParamTypes) => {
 
     if (res == "SUCCESS") {
       setIsOpen(false);
-      window.location.href = "/task"
+      if( params.setReloadTable){
+        params.setReloadTable();
+      }
+      router.push("/task")
     } else { }
 
     return res;
@@ -171,7 +177,10 @@ const TaskAddNew = (params: ParamTypes) => {
 
     if (res == "SUCCESS") {
       setIsOpen(false);
-      window.location.href = "/task"
+      if( params.setReloadTable){
+        params.setReloadTable();
+      }
+      router.push("/task")
     } else { }
 
     return res;
@@ -193,10 +202,16 @@ const TaskAddNew = (params: ParamTypes) => {
       const res = await responseDelTask.json();
       if (res == "SUCCESS") {
         setIsOpen(false);
-        window.location.href = "/task"
+        if( params.setReloadTable){
+          params.setReloadTable();
+        }
+        router.push("/task")
       } else { }
     } else {
-      window.location.href = "/task"
+      if( params.setReloadTable){
+        params.setReloadTable();
+      }
+      router.push("/task")
     }
   }
 

@@ -12,7 +12,7 @@ const Login = () => {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
   const [isLoggedIn, setIsLoggedIn] =useState(false)
-  const [user, setUser] =useState<UserType>()
+  // const [user, setUser] =useState<UserType>()
 
   const { userId, setUserId, data, setData } = useGlobalContext();
 
@@ -38,19 +38,19 @@ const Login = () => {
     const res = await user_login.json()  as ApiResult;
 
     const tmpUser = res.data[0] as UserType;
-    setUser(tmpUser);
+    // setUser(tmpUser);
     // console.log(res.message);
     // console.log(staffObject);
     // console.log(res.data[0]);
     // console.log(tmpUser);
 
     if (res.message == "SUCCESS") {
-      console.log("user",user,)
+      // console.log("user",user,)
       setIsLoggedIn(true)
-      setUserId(tmpUser.username ?? "Guest User");
+      setUserId(tmpUser.userid ?? 0);
       // setUserId(user?.username ?? "");
       setData([
-        { userid: tmpUser?.userid, staffid : tmpUser?.staffid, username : tmpUser?.username }, 
+        { staffid : tmpUser?.staffid, username : tmpUser?.username }, 
       ]);
       // setData([
       //   { userid: user?.userid, staffid : user?.staffid, username : user?.username }, 

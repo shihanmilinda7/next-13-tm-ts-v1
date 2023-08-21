@@ -2,7 +2,7 @@ import TaskAddNew from "./addnew";
 import { TaskObj, TaskObjExtend } from "./types";
 
 
-export const TaskTable = ({ taskRowData }: { taskRowData: TaskObjExtend[] }) => {
+export const TaskTable = ({ taskRowData,setReloadTable }: { taskRowData: TaskObjExtend[],setReloadTable: ()=> void }) => {
 
     const tableHeads = ["#", "Task ID", "Staff Name", "Client", "Visit Count", "Category", "Status", ""];
 
@@ -30,7 +30,7 @@ export const TaskTable = ({ taskRowData }: { taskRowData: TaskObjExtend[] }) => 
                                 <td className="text-left py-3 px-4">{tableRow.visitcount}</td>
                                 <td className="text-left py-3 px-4">{tableRow.categoryname}</td>
                                 <td className="text-left py-3 px-4">{tableRow.status}</td>
-                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><TaskAddNew buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
+                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><TaskAddNew setReloadTable={setReloadTable}  buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
                             </tr>
                         ))}
                     </tbody>

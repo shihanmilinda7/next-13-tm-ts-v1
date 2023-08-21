@@ -47,3 +47,7 @@ model tasks{
   visitcount Int
   status String
 }
+
+model taskphotos{
+
+}

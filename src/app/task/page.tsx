@@ -10,7 +10,11 @@ import { TaskTable } from "../components/task/table";
 export default function Task() {
 
   const [taskRowData, setTaskRowData] = useState<TaskObjExtend[]>([]);
+  const [reloadTable, setReloadTable] = useState(false);
 
+  const toggleReloadTable = () =>{
+    setReloadTable((prv:boolean)=> !prv)
+  }
   useEffect(() => {
     // declare the data fetching function
     const fetchData = async () => {
@@ -25,7 +29,7 @@ export default function Task() {
 
     // call the function
     fetchData().catch(console.error);
-  }, []);
+  }, [reloadTable]);
   return (
     <div>
       <Navbar />
@@ -33,11 +37,11 @@ export default function Task() {
         <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
           Tasks
         </h1>
-        <TaskAddNew buttonName="Add New" />
+        <TaskAddNew buttonName="Add New" setReloadTable={toggleReloadTable} />
       </div>
       <div>
         {taskRowData && (
-          <TaskTable taskRowData={taskRowData} />
+          <TaskTable taskRowData={taskRowData} setReloadTable={toggleReloadTable}/>
         )}
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { StaffObj } from "@/app/components/staff/types";
 import { prisma } from "@/db";
 import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
@@ -12,16 +13,17 @@ export async function GET(request: Request) {
     const selectedColumns: string = searchParams.get("columns") ?? "";
     let selectedColumnsObj: Prisma.staffSelect<DefaultArgs> | null = null;
     if (selectedColumns) {
-        console.log("selectedColumnsObj",selectedColumnsObj,)
+        console.log("selectedColumnsObj", selectedColumnsObj,)
         selectedColumnsObj = JSON.parse(selectedColumns);
     }
-    console.log("selectedColumnsObj11",selectedColumns,)
+    console.log("selectedColumnsObj11", selectedColumns,)
+
+    const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password FROM staff AS s JOIN users AS u ON s.staffid = u.staffid`;
+    const staff : StaffObj[] = await prisma.$queryRaw(rawQuery);
 
     // const staff = await prisma.staff.findMany({
+    //     select: selectedColumnsObj,
     // });
-    const staff = await prisma.staff.findMany({
-        select: selectedColumnsObj,
-    });
 
     if (staff.length > 0) {
         res = { message: "SUCCESS", staff }
@@ -54,15 +56,15 @@ export async function POST(request: Request) {
             const headerId: number = staff.staffid
 
             // 3. addnew user
-           if (staff.staffid) {
-            await tx.users.create({
-                data: {
-                    staffid: headerId,
-                    username,
-                    password
-                },
-            });
-        }
+            if (staff.staffid) {
+                await tx.users.create({
+                    data: {
+                        staffid: headerId,
+                        username,
+                        password
+                    },
+                });
+            }
 
             return ""
         })
@@ -98,18 +100,44 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-    const { staffid, staffname, contracttype, contactno, nic, password, username } = await request.json();
+    const { staffid, staffname, contracttype, contactno, nic, password, username,userid } = await request.json();
     let message: string = "SUCCESS"
     try {
-        const updateStaff = await prisma.staff.updateMany({
-            where: { staffid },
-            data: {
-                staffname,
-                contracttype,
-                contactno,
-                nic,
-            },
-        });
+
+        await prisma.$transaction(async (tx) => {
+            // 1. update staff .
+            const updateStaff = await tx.staff.updateMany({
+                where: { staffid },
+                data: {
+                    staffname,
+                    contracttype,
+                    contactno,
+                    nic,
+                },
+            });
+
+
+            // 2. update user
+            const updateUser = await tx.users.updateMany({
+                where: { userid },
+                data: {
+                    username,
+                    password
+                },
+            });
+
+            return ""
+        })
+
+        // const updateStaff = await tx.staff.updateMany({
+        //     where: { staffid },
+        //     data: {
+        //         staffname,
+        //         contracttype,
+        //         contactno,
+        //         nic,
+        //     },
+        // });
     } catch (error) {
         console.error('Error updating staff:', error);
         message = "FAIL"
@@ -117,23 +145,43 @@ export async function PUT(request: Request) {
     return NextResponse.json(message)
 }
 
-export async function DELETE(request:Request) {
-    const {staffid} = await request.json();
-
+export async function DELETE(request: Request) {
+    const { staffid ,userid} = await request.json();
     let message: string = "SUCCESS"
-  
+
     try {
-        await prisma.staff.delete({
-            where: {
-                staffid: staffid
-            },
+        await prisma.$transaction(async (tx) => {
+            // 1. delete staff .
+            await tx.staff.delete({
+                where: {
+                    staffid: staffid
+                },
+            })
+
+
+            // 2. delete user
+            await tx.users.delete({
+                where: {
+                    userid
+                },
+            })
+
+            return ""
         })
+
+
+
+
+        // await prisma.staff.delete({
+        //     where: {
+        //         staffid: staffid
+        //     },
+        // })
     } catch (error) {
-        console.error('Error updating staff:', error);
+        console.error('Error deleting staff:', error);
         message = "FAIL"
     }
-    
-  
+
+
     return NextResponse.json(message)
-  }
-  
+}

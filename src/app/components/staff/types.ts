@@ -4,6 +4,9 @@ export type StaffObj = {
     contracttype?:string;   
     contactno?:string;   
     nic?:string;
+    userid?: number;
+    username?: string;
+    password?: string;
 }
 
 export type UserType = {

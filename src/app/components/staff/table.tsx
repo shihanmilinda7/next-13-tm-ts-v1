@@ -1,8 +1,11 @@
+"use client"
+
+
 import StaffAddNew from "./addnew";
 import { StaffObj } from "./types";
 
-
-export const StaffTable = ({ staffRowData }: { staffRowData: StaffObj[] }) => {
+export const StaffTable = ({ staffRowData, setReloadTable }: { staffRowData: StaffObj[],setReloadTable: ()=> void }) => {
+    // const [reloadTable, setReloadTable] = useState(false);
 
     const tableHeads = ["#", "Name", "Contract Type", "Contact No", "NIC", ""];
     console.log("ddd", staffRowData,)
@@ -28,7 +31,7 @@ export const StaffTable = ({ staffRowData }: { staffRowData: StaffObj[] }) => {
                                 <td className="text-left py-3 px-4">{tableRow.contactno}</td>
                                 <td className="text-left py-3 px-4">{tableRow.nic}</td>
                                 {/* <td className="p-4 cursor-pointer hover:text-amber-900 hover:font-extrabold" onClick={()=>selRow(tableRow)}>Edit</td> */}
-                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><StaffAddNew buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
+                                <td className="text-left py-3 px-4 cursor-pointer hover:text-amber-900 hover:font-extrabold"><StaffAddNew setReloadTable={setReloadTable} buttonName="Edit | Delete" selRowData={tableRow} delButton={true} /></td>
                             </tr>
                         ))}
                     </tbody>

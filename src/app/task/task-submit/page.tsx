@@ -8,6 +8,13 @@ import { UploadButton } from "@uploadthing/react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+type taskPhotoObjTypes = {
+  taskphotoid?: number;
+  taskid?: number;
+  categoryid?: number;
+  categorydetailid?: number;
+  photodataurl?: string;
+}
 
 export default function Task() {
 
@@ -34,10 +41,16 @@ export default function Task() {
   const categoryid = searchParams.get('categoryid');
   const categoryname = searchParams.get('categoryname');
 
+  let taskidInt: number;
+  if (taskid) {
+    taskidInt = parseInt(taskid)
+  }
+
   const [fetchedCategoryDetailsData, setFetchedCategoryDetailsData] = useState<CategoryDetailObj[]>([]);
+  const [taskPhotos, setTaskPhotos] = useState<taskPhotoObjTypes[]>([]);
 
-
-  useEffect(() => {
+  //get category detials as task
+  const getCategoryDetails = async () => {
     const fetchData = async () => {
       const all_cat_details = await fetch(
         pathname + "/api/category/get_cat_as_catid?categoryid=" + categoryid,
@@ -48,7 +61,24 @@ export default function Task() {
     };
     // call the function
     fetchData().catch(console.error);
-    // console.log("fetchedCategoryDetailsData", fetchedCategoryDetailsData,)
+  }
+
+  //get task photo detials as task
+  const getTaskPhotoDetails = async () => {
+    const fetchData = async () => {
+      const taskPhotos = await fetch(
+        pathname + "/api/task/upload_photos?taskid=" + taskid,
+      );
+      const res = await taskPhotos.json();
+      console.log(res.taskPhotos);
+      setTaskPhotos(res.taskPhotos);
+    };
+    fetchData().catch(console.error);
+  }
+
+  useEffect(() => {
+    getCategoryDetails();
+    getTaskPhotoDetails();
   }, []);
 
   return (
@@ -69,22 +99,26 @@ export default function Task() {
         </div>
       </div>
       <div className="flex flex-wrap pt-4">
-        {fetchedCategoryDetailsData.map((task, index) => (
-          <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
-            <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
-              <div className="flex-auto p-4">
-                <div className="flex flex-wrap">
-                  <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                    <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
-                    <WebcamComponent />
-                  </div>
+        {fetchedCategoryDetailsData.map((task, index) => {
+          const taskPhotoObject = taskPhotos.find((p:taskPhotoObjTypes) => p.categorydetailid==task.categorydetailid)
+          console.log("taskPhotoObject",taskPhotoObject?.taskphotoid)
+        return (
+        <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+            <div className="flex-auto p-4">
+              <div className="flex flex-wrap">
+                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
+                  <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
+
+                  <WebcamComponent taskDetails={task} taskid={taskidInt} pathname={pathname} taskphotoid={taskPhotoObject?.taskphotoid ?? 0} photodataurl={taskPhotoObject?.photodataurl ?? ''} />
                 </div>
               </div>
             </div>
           </div>
-        ))}
+        </div>)
+        })}
       </div>
-      <UploadButton<OurFileRouter>
+      {/* <UploadButton<OurFileRouter>
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
           // Do something with the response
@@ -95,7 +129,7 @@ export default function Task() {
           // Do something with the error.
           alert(`ERROR! ${error.message}`);
         }}
-      />
+      /> */}
     </div>
   );
 }
