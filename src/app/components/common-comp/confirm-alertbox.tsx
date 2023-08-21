@@ -9,11 +9,14 @@ type Props = {
     leftButtonAction: DelButton;
     title: string
     description: string
+    buttonColour?: string
 }
 
-const ConfirmAlertbox = ({ buttonName, leftButtonAction, title, description }:Props) => {
+const ConfirmAlertbox = ({ buttonName, leftButtonAction, title, description, buttonColour }:Props) => {
     const [showAlert, setShowAlert] = useState(false);
 
+    const bgColour = buttonColour || "bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600";
+    
     const customStyles = {
         overlay: {
             backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -31,7 +34,7 @@ const ConfirmAlertbox = ({ buttonName, leftButtonAction, title, description }:Pr
         <div>
             <button
                 onClick={() => setShowAlert(true)}
-                className="rounded-lg bg-gradient-to-r from-red-500 to-red-600  hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                className={"rounded-lg py-3 px-8 text-center text-base font-semibold text-white outline-none "+ bgColour}
             >
                 {buttonName}
             </button>

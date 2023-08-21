@@ -228,7 +228,13 @@ const CategoryAddNew = (params: ParamTypes) => {
                                 </button>
                             </div>
                             <div className={showDelButton ? "flex ml-auto" : "flex ml-auto hidden"}>
-                                <ConfirmAlertbox buttonName="Delete" leftButtonAction={deleteAction} title="Are you sure?" description="Do you want to delete this record ?" />
+                                <ConfirmAlertbox 
+                                buttonName="Delete" 
+                                leftButtonAction={deleteAction} 
+                                title="Are you sure?" 
+                                description="Do you want to delete this record ?" 
+                                buttonColour='bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600'
+                                />
                             </div>
                         </div>
                     </div>

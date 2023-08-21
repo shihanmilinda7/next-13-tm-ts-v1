@@ -61,3 +61,26 @@ export async function POST(request: Request) {
     //   return NextResponse.json({message:"SUCCESS",newUser})
     return NextResponse.json(message)
 }
+
+export async function DELETE(request: Request) {
+    const { taskphotoid} = await request.json();
+    let message: string = "SUCCESS"
+
+    try {
+        await prisma.$transaction(async (tx) => {
+            // 1. delete staff .
+            await tx.taskphotos.delete({
+                where: {
+                    taskphotoid
+                },
+            })
+            return ""
+        })
+    } catch (error) {
+        console.error('Error deleting taskphoto:', error);
+        message = "FAIL"
+    }
+
+
+    return NextResponse.json(message)
+}

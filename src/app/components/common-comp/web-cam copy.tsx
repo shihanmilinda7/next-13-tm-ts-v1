@@ -10,7 +10,7 @@ import { CategoryDetailObj } from '../category/types';
 // }
 
 
-const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodataurl, setReloadPage }: { taskDetails: CategoryDetailObj, taskid: number, pathname: string, taskphotoid: number, photodataurl: string, setReloadPage: () => void }) => {
+const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodataurl,setReloadPage }: { taskDetails: CategoryDetailObj, taskid: number, pathname: string, taskphotoid: number, photodataurl: string,setReloadPage: ()=> void }) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -20,13 +20,10 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
     // const [taskPhoto, setTaskPhoto] = useState<taskPhotoObjTypes>();
     const format = 'image/jpeg'
     useEffect(() => {
-        console.log("taskDetails------------------------")
+        console.log("taskphotoid", taskphotoid,)
         if (photodataurl) {
-            console.log("deletedfffffffffffffff",)
             setCapturedImage(photodataurl);
             setShowDelButton(true);
-        } else {
-            // setCapturedImage("https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg");
         }
     }, [taskphotoid]);
 
@@ -74,13 +71,38 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         }
     };
 
+
+    // const uploadImg = async () => {
+    //     const dataBlob: Blob | null = await new Promise<Blob | null>(
+    //         (resolve) => canvasRef.current?.toBlob(
+    //             (blob) => resolve(blob),
+    //             "image/png",
+    //         ));
+
+    //     if (dataBlob) {
+    //         console.log("nnnnnnn1111nnnnssnnnnnnn",)
+    //         const file = new File([dataBlob], "image.png");
+
+    //        await uploadSomeFiles(file)
+    //         //dload
+    //         // const element = document.createElement("a");
+    //         // element.href = URL.createObjectURL(file);
+    //         // element.download = "myFile.png";
+    //         // document.body.appendChild(element); // Required for this to work in FireFox
+    //         // element.click();
+
+    //         return null ;
+    //     } else {
+    //         return null
+    //     }
+    // };
     const uploadImg = async () => {
         const capturedDataURL = canvasRef.current?.toDataURL(format);
         const tmpCategoryId = taskDetails.categoryid;
         const tmpCategoryDetailId = taskDetails.categorydetailid;
 
 
-        // console.log("taskDetails", taskDetails,)
+        console.log("taskDetails", taskDetails,)
 
         //call for end point
         const response = await fetch(
@@ -96,21 +118,61 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         console.log(res);
 
         if (res == "SUCCESS") {
-            setReloadPage();
+            // if (params.setReloadTable) {
+            //   params.setReloadTable();
+            // }
+            // // window.location.href = "/staff"
+            // router.push("/staff");
         } else { }
+
+
+
+
+
+
+
+
+        // console.log("capturedDataURL",capturedDataURL,)
+        // if (capturedDataURL) {
+        //     // Create a Blob from the data URL
+        //     const blob = new Blob([atob(capturedDataURL.split(',')[1])], { type: format });
+
+        //     // Create a File instance from the Blob
+        //     const file = new File([blob], 'captured-image.jpeg', { type: format });
+        //     // await uploadSomeFiles(file)
+        //     const element = document.createElement("a");
+        //     element.href = URL.createObjectURL(file);
+        //     element.download = "myFile.jpeg";
+        //     document.body.appendChild(element); // Required for this to work in FireFox
+        //     element.click();
+        // }
+
     };
 
-    const deleteImg = async () => {
-        const res_del_cat = await fetch(
-            pathname + "/api/task/upload_photos",
-            {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ taskphotoid }),
-            }
-        );
-        setReloadPage();
-    }
+    // const deleteImg = async () => {
+    //     const res_del_cat = await fetch(
+    //         "api/category",
+    //         {
+    //             method: "DELETE",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ categoryid, categoryValues }),
+    //         }
+    //     ); 
+    // }
+
+
+    // // const uploadSomeFiles = async (file: File) => {
+    //     const files = [
+    //         file,
+    //     ];
+
+    //     const res = await uploadFiles({
+    //         files,
+    //         endpoint: "imageUploader",
+    //         //   input: {input:"imageUploader"}, // will be typesafe to match the input set for `imageUploader` in your FileRouter
+    //     });
+    // }
+
     return (
         <div>
             {/* <img src={photodataurl} alt="Captured" /> */}
@@ -149,7 +211,7 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
                 )}
                 {showDelButton && (
                     <div className={!cameraActive ? "ml-4 w-full flex ml-auto" : "flex ml-auto hidden"}>
-                        <button onClick={deleteImg}
+                        <button onClick={uploadImg}
                             className="mt-3 w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600  hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
                         >
                             Delete

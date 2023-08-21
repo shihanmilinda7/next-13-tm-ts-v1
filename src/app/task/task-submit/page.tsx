@@ -2,8 +2,10 @@
 
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { CategoryDetailObj } from "@/app/components/category/types";
+import ConfirmAlertbox from "@/app/components/common-comp/confirm-alertbox";
 import WebcamComponent from "@/app/components/common-comp/web-cam";
 import Navbar from "@/app/components/navbar/navbar";
+import { ApiResult } from "@/app/types";
 import { UploadButton } from "@uploadthing/react";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -48,44 +50,81 @@ export default function Task() {
 
   const [fetchedCategoryDetailsData, setFetchedCategoryDetailsData] = useState<CategoryDetailObj[]>([]);
   const [taskPhotos, setTaskPhotos] = useState<taskPhotoObjTypes[]>([]);
+  const [reloadPage, setReloadPage] = useState(false);
+  const [endTaskButton, setEndTaskButton] = useState(false);
 
-  //get category detials as task
-  const getCategoryDetails = async () => {
-    const fetchData = async () => {
-      const all_cat_details = await fetch(
-        pathname + "/api/category/get_cat_as_catid?categoryid=" + categoryid,
-      );
-      const res = await all_cat_details.json();
-      setFetchedCategoryDetailsData(res.categoriesData);
-      // setStaffid(selRowData?.staffid ?? "");
-    };
-    // call the function
-    fetchData().catch(console.error);
+  //page reload
+  const toggleReloadPage = () => {
+    setReloadPage((prv: boolean) => !prv)
   }
 
-  //get task photo detials as task
-  const getTaskPhotoDetails = async () => {
-    const fetchData = async () => {
-      const taskPhotos = await fetch(
-        pathname + "/api/task/upload_photos?taskid=" + taskid,
-      );
-      const res = await taskPhotos.json();
-      console.log(res.taskPhotos);
-      setTaskPhotos(res.taskPhotos);
-    };
-    fetchData().catch(console.error);
-  }
+  // //get category detials as task
+  // const getCategoryDetails = async () => {
+  //   const fetchData = async () => {
+  //     const all_cat_details = await fetch(
+  //       pathname + "/api/category/get_cat_as_catid?categoryid=" + categoryid,
+  //     );
+  //     const res = await all_cat_details.json();
+  //     setFetchedCategoryDetailsData(res.categoriesData);
+  //     // console.log("getCategoryDetails - ",res.categoriesData.length)
+  //     // setStaffid(selRowData?.staffid ?? "");
+  //   };
+  //   // call the function
+  //   fetchData().catch(console.error);
+  // }
+
+  // //get task photo detials as task
+  // const getTaskPhotoDetails = async () => {
+  //   const fetchData = async () => {
+  //     const taskPhotos = await fetch(
+  //       pathname + "/api/task/upload_photos?taskid=" + taskid,
+  //     );
+  //     const res = await taskPhotos.json();
+  //     // console.log("gggggggggggggggggg-----------", res.taskPhotos);
+  //     setTaskPhotos(res.taskPhotos);
+  //     // console.log("getTaskPhotoDetails - ",res.taskPhotos.length)
+
+  //   };
+  //   fetchData().catch(console.error);
+  // }
 
   useEffect(() => {
-    getCategoryDetails();
-    getTaskPhotoDetails();
-  }, []);
+    //  getCategoryDetails();
+    console.log("categoryid",categoryid,)
+    fetch(
+      pathname + "/api/category/get_cat_as_catid?categoryid=" + categoryid,
+    ).then((res) => res.json()).then((resJson: { message: string, categoriesData: CategoryDetailObj[] }) => {
+      console.log("res1", resJson.categoriesData,)
+      setFetchedCategoryDetailsData([...resJson.categoriesData]);
+      console.log("fetchedCategoryDetailsData",fetchedCategoryDetailsData,)
+      console.log("taskid",taskid,)
+      fetch(
+        pathname + "/api/task/upload_photos?taskid=" + taskid,
+      ).then((res) => res.json()).then((resJson: { message: string, taskPhotos: taskPhotoObjTypes[] }) => {
+        console.log("res2", resJson.taskPhotos,)
+        setTaskPhotos(resJson.taskPhotos);
+
+        console.log("reloadPage", reloadPage)
+        if (fetchedCategoryDetailsData.length == taskPhotos.length) {
+          console.log("ddddddddddddddddddeeeeeeeeeeeeeeeeeeeeee", taskPhotos.length, fetchedCategoryDetailsData.length)
+          setEndTaskButton(true)
+        } else {
+          console.log("ඒඒඒඒ", taskPhotos.length, fetchedCategoryDetailsData.length)
+          setEndTaskButton(false)
+        }
+
+      })
+    })
+    // getTaskPhotoDetails();
+
+    // console.log("reload pageeeeeeeeeeeeeeeee",)
+  }, [reloadPage]);
 
   return (
     <div>
       <Navbar />
       <div className="flex items-center justify-center p-4">
-        <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
+        <h1 className="text-xl md:text-2xl lg:text-base xl:text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
           Task Submission
         </h1>
       </div>
@@ -94,30 +133,54 @@ export default function Task() {
           {/* <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
             Prev
           </button> */}
-          <h5 className="font-semibold text-2xl text-blueGray-700">{clientname} - {location}</h5>
-          <h5 className="font-semibold text-cl text-blueGray-700">Category: {categoryname}</h5>
+          <h5 className="font-semibold text-xl md:text-xl lg:text-base xl:text-2xl text-blueGray-700">{clientname} - {location}</h5>
+          <h5 className="font-semibold text-sm md:text-sm lg:text-base xl:text-xl text-blueGray-700">Category: {categoryname}</h5>
+        </div>
+        <div>
+
         </div>
       </div>
       <div className="flex flex-wrap pt-4">
         {fetchedCategoryDetailsData.map((task, index) => {
-          const taskPhotoObject = taskPhotos.find((p:taskPhotoObjTypes) => p.categorydetailid==task.categorydetailid)
-          console.log("taskPhotoObject",taskPhotoObject?.taskphotoid)
-        return (
-        <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
-          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
-            <div className="flex-auto p-4">
-              <div className="flex flex-wrap">
-                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                  <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
-
-                  <WebcamComponent taskDetails={task} taskid={taskidInt} pathname={pathname} taskphotoid={taskPhotoObject?.taskphotoid ?? 0} photodataurl={taskPhotoObject?.photodataurl ?? ''} />
+          const taskPhotoObject = taskPhotos.find((p: taskPhotoObjTypes) => p.categorydetailid == task.categorydetailid)
+          // console.log("taskPhotoObject",taskPhotoObject?.taskphotoid)
+          return (
+            <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+              <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+                <div className="flex-auto p-4">
+                  <div className="flex flex-wrap">
+                    <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
+                      <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
+                      <WebcamComponent
+                        taskDetails={task}
+                        taskid={taskidInt}
+                        pathname={pathname}
+                        taskphotoid={taskPhotoObject?.taskphotoid ?? 0}
+                        photodataurl={taskPhotoObject?.photodataurl ?? ''}
+                        setReloadPage={toggleReloadPage}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>)
+            </div>)
         })}
       </div>
+      {endTaskButton && (
+        <div className="flex items-center justify-center">
+          <ConfirmAlertbox
+            buttonName="End Task"
+            leftButtonAction={toggleReloadPage}
+            title="Are you sure?"
+            description="Do you want to end task ?"
+            buttonColour='bg-gradient-to-r from-green-500 to-green-600 hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600'
+          />
+        </div>
+      )}
+     <p>{endTaskButton ? 1 :2}</p> 
+
+
+
       {/* <UploadButton<OurFileRouter>
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
