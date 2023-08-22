@@ -169,7 +169,6 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         //     if(context){
         //         context.clearRect(0,0,canvasRef?.current?.width ??0,canvasRef?.current?.height?? 0)
         //     }
-
     }
 
 
