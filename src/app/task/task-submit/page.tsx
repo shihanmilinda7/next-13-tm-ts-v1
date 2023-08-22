@@ -8,7 +8,9 @@ import Navbar from "@/app/components/navbar/navbar";
 import { ApiResult } from "@/app/types";
 import { UploadButton } from "@uploadthing/react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type taskPhotoObjTypes = {
   taskphotoid?: number;
@@ -19,7 +21,7 @@ type taskPhotoObjTypes = {
 }
 
 export default function Task() {
-
+  const router = useRouter()
   //get pathname
   let pathname: string = "";
 
@@ -88,37 +90,69 @@ export default function Task() {
   //   fetchData().catch(console.error);
   // }
 
+  const endTaskClickEvent = async () => {
+    const res_update_task = await fetch(
+      pathname + "/api/task/get_task_as_staffid",
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taskid }),
+      }
+
+    );
+
+    const res = await res_update_task.json();
+
+    if (res == "SUCCESS") {
+      toast.success('Task completed successfully!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      router.push("/dashboard")
+    } else {
+      toast.error('Error!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    return res;
+  }
+
   useEffect(() => {
-    //  getCategoryDetails();
-    console.log("categoryid",categoryid,)
     fetch(
       pathname + "/api/category/get_cat_as_catid?categoryid=" + categoryid,
     ).then((res) => res.json()).then((resJson: { message: string, categoriesData: CategoryDetailObj[] }) => {
-      console.log("res1", resJson.categoriesData,)
-      setFetchedCategoryDetailsData([...resJson.categoriesData]);
-      console.log("fetchedCategoryDetailsData",fetchedCategoryDetailsData,)
-      console.log("taskid",taskid,)
+      // setFetchedCategoryDetailsData((p)=> [...p,...resJson.categoriesData]);
+      setFetchedCategoryDetailsData(resJson.categoriesData);
       fetch(
         pathname + "/api/task/upload_photos?taskid=" + taskid,
       ).then((res) => res.json()).then((resJson: { message: string, taskPhotos: taskPhotoObjTypes[] }) => {
-        console.log("res2", resJson.taskPhotos,)
+        // setTaskPhotos((t)=> [...t,...resJson.taskPhotos]);
         setTaskPhotos(resJson.taskPhotos);
-
-        console.log("reloadPage", reloadPage)
-        if (fetchedCategoryDetailsData.length == taskPhotos.length) {
-          console.log("ddddddddddddddddddeeeeeeeeeeeeeeeeeeeeee", taskPhotos.length, fetchedCategoryDetailsData.length)
-          setEndTaskButton(true)
-        } else {
-          console.log("ඒඒඒඒ", taskPhotos.length, fetchedCategoryDetailsData.length)
-          setEndTaskButton(false)
-        }
-
       })
     })
-    // getTaskPhotoDetails();
-
-    // console.log("reload pageeeeeeeeeeeeeeeee",)
   }, [reloadPage]);
+
+  useEffect(() => {
+    if (fetchedCategoryDetailsData.length == taskPhotos.length) {
+      setEndTaskButton(true)
+    } else {
+      setEndTaskButton(false)
+    }
+  }, [fetchedCategoryDetailsData, taskPhotos])
 
   return (
     <div>
@@ -170,14 +204,13 @@ export default function Task() {
         <div className="flex items-center justify-center">
           <ConfirmAlertbox
             buttonName="End Task"
-            leftButtonAction={toggleReloadPage}
+            leftButtonAction={endTaskClickEvent}
             title="Are you sure?"
             description="Do you want to end task ?"
             buttonColour='bg-gradient-to-r from-green-500 to-green-600 hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600'
           />
         </div>
       )}
-     <p>{endTaskButton ? 1 :2}</p> 
 
 
 

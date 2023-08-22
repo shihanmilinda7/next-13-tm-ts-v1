@@ -7,7 +7,6 @@ import { StaffObj } from './types';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import { useRouter } from 'next/navigation';
 import Toast from '../common-comp/toast';
-import { toast } from "react-toastify";
 
 
 type ParamTypes = {
@@ -15,7 +14,6 @@ type ParamTypes = {
   selRowData?: StaffObj;
   delButton?: boolean;
   setReloadTable?: () => void;
-  showAddnewAlert?: () => void;
 }
 
 const StaffAddNew = (params: ParamTypes) => {
@@ -34,7 +32,7 @@ const StaffAddNew = (params: ParamTypes) => {
 
   const [showDelButton, setShowDelButton] = useState(params.delButton);
 
-  const [successfulToast, setSuccessfulToast] = useState(false);
+  const [successfulToast, setSuccessfulToast] = useState(true);
   const closeButtonAction = () => {
     setSuccessfulToast(false);
   }
@@ -79,66 +77,17 @@ const StaffAddNew = (params: ParamTypes) => {
       const res = await responseNewStaff.json();
       console.log(res);
 
-
       if (res == "SUCCESS") {
         setIsOpen(false);
         if (params.setReloadTable) {
           params.setReloadTable();
         }
-        toast.success('Staff created successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-
-        // router.push("/staff");
-      } else {
-        toast.error('Error!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-
-
-      // if (res == "SUCCESS") {
-      //   setSuccessfulToast(true);
-      //   setTimeout(() => {
-      //     setSuccessfulToast(false);
-      //   }, 1500);
-
-      //   setTimeout(() => {
-      //     setIsOpen(false);
-      //     if (params.setReloadTable) {
-      //       params.setReloadTable();
-      //     }
-      //   }, 1600);
-
-      //   // router.push("/staff");
-      // } else { }
-
-
-      // if (res == "SUCCESS") {
-      //   setIsOpen(false);
-      //   if (params.setReloadTable) {
-      //     params.setReloadTable();
-      //   }
-      //   setSuccessfulToast(true);
-      //   setTimeout(() => {
-      //     setSuccessfulToast(false);
-      //   }, 3000);
-      //  // router.push("/staff");
-      // } else { }
+        setSuccessfulToast(true);
+        setTimeout(() => {
+          setSuccessfulToast(false);
+        }, 3000);
+        router.push("/staff");
+      } else { }
 
       return res;
     } else {
@@ -168,28 +117,10 @@ const StaffAddNew = (params: ParamTypes) => {
         if (params.setReloadTable) {
           params.setReloadTable();
         }
-        toast.success('Staff updated successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } else {
-        toast.error('Error!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
+        // 
+        // window.location.href = "/staff"
+        router.push("/staff");
+      } else { }
 
       return res;
     }
@@ -212,27 +143,9 @@ const StaffAddNew = (params: ParamTypes) => {
         if (params.setReloadTable) {
           params.setReloadTable();
         }
-        toast.success('Staff deleted successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } else {
-        toast.error('Error!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      }); }
+        // window.location.href = "/staff"
+        router.push("/staff");
+      } else { }
     } else {
       // window.location.href = "/staff"
       if (params.setReloadTable) {
@@ -367,15 +280,18 @@ const StaffAddNew = (params: ParamTypes) => {
                   Cancel
                 </button>
               </div>
+
+
               <div className={showDelButton ? "flex ml-auto" : "flex ml-auto hidden"}>
                 <ConfirmAlertbox buttonName="Delete" leftButtonAction={deleteAction} title="Are you sure?" description="Do you want to delete this record ?" />
               </div>
             </div>
           </div>
-          {successfulToast && (
-            < Toast title="Succes" description="Staff Created successfully!" buttonColour="bg-green-600 dark:bg-green-700" closeButtonAction={closeButtonAction} />)}
         </div>
       </Modal>
+      {successfulToast && (
+        < Toast title="Succes" description="Staff Created successfully!" buttonColour="bg-green-600 dark:bg-green-700" closeButtonAction={closeButtonAction} />)}
+
     </div>
   )
 }

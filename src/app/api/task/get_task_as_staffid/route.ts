@@ -10,10 +10,15 @@ export async function GET(request: Request) {
     let res;
 
     const staffid: string = searchParams.get("staffid") ?? "";
-    // let selectedColumnsObj: Prisma.staffSelect<DefaultArgs> | null = null;
-
-
-    const rawQuery = Prisma.sql`SELECT t.taskid, t.clientname, t.location,t.categoryid,c.categoryname FROM tasks AS t LEFT JOIN categories AS c ON t.categoryid = c.categoryid WHERE t.staffid = ${staffid}`;
+    const status: string = searchParams.get("status") ?? "";
+    // console.log("status",status,)
+    let rawQuery;
+    if (!status) {
+        rawQuery = Prisma.sql`SELECT t.taskid, t.clientname, t.location,t.categoryid,c.categoryname FROM tasks AS t LEFT JOIN categories AS c ON t.categoryid = c.categoryid WHERE t.staffid = ${staffid};`;
+    } else {
+        // console.log("run thissssss",)
+        rawQuery = Prisma.sql`SELECT t.taskid, t.clientname, t.location,t.categoryid,c.categoryname FROM tasks AS t LEFT JOIN categories AS c ON t.categoryid = c.categoryid WHERE t.staffid = ${staffid} AND status = ${status};`;
+    }
     const tasks: TaskObj[] = await prisma.$queryRaw(rawQuery);
 
 
@@ -28,4 +33,21 @@ export async function GET(request: Request) {
         res = { message: "FAIL" }
     }
     return NextResponse.json(res)
+}
+
+export async function PUT(request: Request) {
+    const { taskid } = await request.json();
+    let message: string = "SUCCESS"
+    try {
+        const updateTask = await prisma.tasks.update({
+            where: {taskid: parseInt(taskid) },
+            data: {
+                status:"Completed"
+            },
+        });
+    } catch (error) {
+        console.error('Error updating task', error);
+        message = "FAIL"
+    }
+    return NextResponse.json(message)
 }

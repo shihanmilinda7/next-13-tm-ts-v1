@@ -3,6 +3,8 @@
 import { uploadFiles } from '@/app/utils/uploadthing';
 import { useState, useEffect, useRef } from 'react';
 import { CategoryDetailObj } from '../category/types';
+import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 // type taskPhotoObjTypes = {
 //     taskphotoid?: number;
@@ -16,7 +18,12 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
     const [cameraActive, setCameraActive] = useState(false);
     const [showDelButton, setShowDelButton] = useState(false);
+    // const [deletePhoto, setDeletePhoto]= useState(false);
 
+    const router = useRouter()
+    // const toggleDeletePhotoState = () =>{
+    //     setDeletePhoto((p) => !p)
+    // }
     // const [taskPhoto, setTaskPhoto] = useState<taskPhotoObjTypes>();
     const format = 'image/jpeg'
     useEffect(() => {
@@ -30,8 +37,19 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         }
     }, [taskphotoid]);
 
+    useEffect(() => {
+        if (videoRef.current) {
+            const stream = videoRef.current.srcObject as MediaStream;
+            if (stream) {
+                console.log("camera off",)
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        }
+    }, [capturedImage])
 
-    const cameraOnButtonClick = () => {
+
+    const cameraOnButtonClick = async () => {
         // const constraints: MediaStreamConstraints = { video: true };
         const constraints: MediaStreamConstraints = { video: { facingMode: 'environment' } };
 
@@ -47,17 +65,25 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
             }
         };
 
-        startWebcam();
-
-        return () => {
-            if (videoRef.current) {
-                const stream = videoRef.current.srcObject as MediaStream;
-                if (stream) {
-                    const tracks = stream.getTracks();
-                    tracks.forEach(track => track.stop());
-                }
-            }
-        };
+        await startWebcam();
+        // if (videoRef.current) {
+        //         const stream = videoRef.current.srcObject as MediaStream;
+        //         if (stream) {
+        //             console.log("camera off",)
+        //             const tracks = stream.getTracks();
+        //             tracks.forEach(track => track.stop());
+        //         }
+        //     }
+        // return () => {
+        //     if (videoRef.current) {
+        //         const stream = videoRef.current.srcObject as MediaStream;
+        //         if (stream) {
+        //             console.log("camera off",)
+        //             const tracks = stream.getTracks();
+        //             tracks.forEach(track => track.stop());
+        //         }
+        //     }
+        // };
     };
 
     const captureImage = () => {
@@ -96,6 +122,16 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         console.log(res);
 
         if (res == "SUCCESS") {
+            toast.success('Photo uploaded successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
             setReloadPage();
         } else { }
     };
@@ -109,8 +145,34 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
                 body: JSON.stringify({ taskphotoid }),
             }
         );
+        toast.success('Photo deleted successfully!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+        setCapturedImage("");
         setReloadPage();
+        setShowDelButton(false);
+        // setTimeout(() => {
+        //      setReloadPage();  
+        // }, 500);
+
+
+        // toggleDeletePhotoState();
+
+        // const context = canvasRef?.current?.getContext('2d');
+        //     if(context){
+        //         context.clearRect(0,0,canvasRef?.current?.width ??0,canvasRef?.current?.height?? 0)
+        //     }
+
     }
+
+
     return (
         <div>
             {/* <img src={photodataurl} alt="Captured" /> */}

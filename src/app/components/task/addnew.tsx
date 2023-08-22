@@ -10,6 +10,7 @@ import { StaffObj } from '../staff/types';
 import { CategoryDetailObj, CategoryObj } from '../category/types';
 import IntegerInputField from '../common-comp/input-fields/number-input-field';
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 type ParamTypes = {
   buttonName: string;
@@ -155,8 +156,28 @@ const TaskAddNew = (params: ParamTypes) => {
       if( params.setReloadTable){
         params.setReloadTable();
       }
-      router.push("/task")
-    } else { }
+      toast.success('Task crated successfully!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      toast.error('Error!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+     }
 
     return res;
 
@@ -180,8 +201,28 @@ const TaskAddNew = (params: ParamTypes) => {
       if( params.setReloadTable){
         params.setReloadTable();
       }
-      router.push("/task")
-    } else { }
+      toast.success('Task updated successfully!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else { 
+      toast.error('Error!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
 
     return res;
 
@@ -205,8 +246,28 @@ const TaskAddNew = (params: ParamTypes) => {
         if( params.setReloadTable){
           params.setReloadTable();
         }
-        router.push("/task")
-      } else { }
+        toast.success('Task deleted successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        toast.error('Error!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+       }
     } else {
       if( params.setReloadTable){
         params.setReloadTable();

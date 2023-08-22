@@ -6,19 +6,26 @@ import React, { useEffect, useState } from "react";
 // import { StaffObj } from "../staff/types";
 import { ApiResult } from "@/app/types";
 import { UserType } from "../staff/types";
+import Toast from "../common-comp/toast";
 // import Toast from "./toast";
+
+import {toast} from "react-toastify";
+
 
 const Login = () => {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
-  const [isLoggedIn, setIsLoggedIn] =useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   // const [user, setUser] =useState<UserType>()
 
   const { userId, setUserId, data, setData } = useGlobalContext();
 
   const router = useRouter();
-  //   const [showAlert, setShowAlert] = useState(false);
+  // const [showToast, setShowToast] = useState(false);
 
+  // const closeButtonAction = () =>{
+  //   setShowToast(false);
+  // }
   // useEffect(() => {
   //   console.log("user Obj",user,)
   //   setUserId(user?.username ?? "");
@@ -35,31 +42,49 @@ const Login = () => {
       body: JSON.stringify({ username, password }),
     });
 
-    const res = await user_login.json()  as ApiResult;
+    const res = await user_login.json() as ApiResult;
 
-    const tmpUser = res.data[0] as UserType;
     // setUser(tmpUser);
     // console.log(res.message);
     // console.log(staffObject);
     // console.log(res.data[0]);
     // console.log(tmpUser);
-
+    
     if (res.message == "SUCCESS") {
-      // console.log("user",user,)
+      const tmpUser = res.data[0] as UserType;
       setIsLoggedIn(true)
       setUserId(tmpUser.userid ?? 0);
-      // setUserId(user?.username ?? "");
       setData([
-        { staffid : tmpUser?.staffid, username : tmpUser?.username }, 
+        { staffid: tmpUser?.staffid, username: tmpUser?.username },
       ]);
-      // setData([
-      //   { userid: user?.userid, staffid : user?.staffid, username : user?.username }, 
-      // ]);
       router.push('/dashboard')
-      // console.log("res",res,)
+      toast.success('Logged in successfully!', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
     } else {
+      toast.error('Username or Password Incorrect!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
       // console.log("res",res,)
-      router.push('/')
+    // setShowToast(true);
+    // setTimeout(() => {
+    //   setShowToast(false);
+    // }, 3000);
+    //   router.push('/')
     }
     return res;
   };
@@ -136,8 +161,8 @@ const Login = () => {
                   className="w-full flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-4  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500">
                   Sign in
                 </button>
-                {/* {showAlert && (
-                  < Toast description ="Invalid Email or Password !" style="bg-red-500 hover:bg-red-600" setShowAlert={setShowAlert}/>)} */}
+                {/* {showToast && (
+                  < Toast title="Wraning" description="Incorrect Username or Password!" buttonColour="bg-red-600 dark:bg-red-700" closeButtonAction={closeButtonAction}/>)} */}
               </div>
             </div>
           </div>

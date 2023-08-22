@@ -7,17 +7,18 @@ import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import { CategoryDetailObj, CategoryObj } from './types';
 import CategoryInputField from './categoty-input-field';
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 type ParamTypes = {
     buttonName: string;
     selRowData?: CategoryObj;
     delButton?: boolean;
-    setReloadTable?: ()=> void;
+    setReloadTable?: () => void;
 
 }
 
 const CategoryAddNew = (params: ParamTypes) => {
-  const router = useRouter();
+    const router = useRouter();
 
     const [isOpen, setIsOpen] = useState(false)
 
@@ -66,11 +67,31 @@ const CategoryAddNew = (params: ParamTypes) => {
 
         if (res == "SUCCESS") {
             setIsOpen(false);
-            if( params.setReloadTable){
+            if (params.setReloadTable) {
                 params.setReloadTable();
-              }
-              router.push("/category")
-        } else { }
+            }
+            toast.success('Category crated successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } else {
+            toast.error('Error!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
 
         return res;
 
@@ -91,12 +112,32 @@ const CategoryAddNew = (params: ParamTypes) => {
 
         if (res == "SUCCESS") {
             setIsOpen(false);
-            if( params.setReloadTable){
+            if (params.setReloadTable) {
                 params.setReloadTable();
-              }
-              router.push("/category")
+            }
+            toast.success('Category updated successfully!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
 
-        } else { }
+        } else {
+            toast.error('Error!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
 
         return res;
 
@@ -117,17 +158,37 @@ const CategoryAddNew = (params: ParamTypes) => {
             const res = await res_del_cat.json();
             if (res == "SUCCESS") {
                 setIsOpen(false);
-                if( params.setReloadTable){
+                if (params.setReloadTable) {
                     params.setReloadTable();
-                  }
-                  router.push("/category")
+                }
+                toast.success('Category deleted successfully!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
 
-            } else { }
+            } else {
+                toast.error('Error!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            }
         } else {
-            if( params.setReloadTable){
+            if (params.setReloadTable) {
                 params.setReloadTable();
-              }
-              router.push("/category")
+            }
+            router.push("/category")
         }
     }
 
@@ -228,12 +289,12 @@ const CategoryAddNew = (params: ParamTypes) => {
                                 </button>
                             </div>
                             <div className={showDelButton ? "flex ml-auto" : "flex ml-auto hidden"}>
-                                <ConfirmAlertbox 
-                                buttonName="Delete" 
-                                leftButtonAction={deleteAction} 
-                                title="Are you sure?" 
-                                description="Do you want to delete this record ?" 
-                                buttonColour='bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600'
+                                <ConfirmAlertbox
+                                    buttonName="Delete"
+                                    leftButtonAction={deleteAction}
+                                    title="Are you sure?"
+                                    description="Do you want to delete this record ?"
+                                    buttonColour='bg-gradient-to-r from-red-500 to-red-600 hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600'
                                 />
                             </div>
                         </div>

@@ -28,7 +28,8 @@ export default function Dashboard() {
         const fetchData = async () => {
             const columns = JSON.stringify({ staffid: true })
             const task_details = await fetch(
-                "api/task/get_task_as_staffid?staffid="+staffid,
+                // "api/task/get_task_as_staffid?staffid="+staffid
+                "api/task/get_task_as_staffid?staffid="+staffid+"&status=Not%20Completed",
             );
             const res = await task_details.json();
             setTaskData(res.tasks);

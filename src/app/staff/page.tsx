@@ -5,12 +5,20 @@ import Navbar from "../components/navbar/navbar";
 import StaffAddNew from "../components/staff/addnew";
 import { StaffTable } from "../components/staff/table";
 import { StaffObj } from "../components/staff/types";
+import Toast from "../components/common-comp/toast";
 
 
 export default function Staff() {
 
   const [staffRowData, setStaffRowData] = useState<StaffObj[]>([]);
   const [reloadTable, setReloadTable] = useState(false);
+
+  // const [successfulToast, setSuccessfulToast] = useState(true);
+
+
+  // const closeButtonAction = () => {
+  //   setSuccessfulToast(false);
+  // }
 
   const toggleReloadTable = () =>{
     setReloadTable((prv:boolean)=> !prv)
@@ -45,6 +53,8 @@ export default function Staff() {
           <StaffTable staffRowData={staffRowData} setReloadTable={toggleReloadTable} />
         )}
       </div>
+      {/* {successfulToast && (
+        < Toast title="Succes" description="Staff Created successfully!" buttonColour="bg-green-600 dark:bg-green-700" closeButtonAction={closeButtonAction} />)} */}
     </div>
   );
 }
