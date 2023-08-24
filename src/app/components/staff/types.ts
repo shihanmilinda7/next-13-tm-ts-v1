@@ -6,6 +6,7 @@ export type StaffObj = {
     nic?:string;
     userid?: number;
     username?: string;
+    role?: string;
     password?: string;
 }
 

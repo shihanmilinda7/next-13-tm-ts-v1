@@ -12,9 +12,10 @@ datasource db {
 
 model users{
   userid       Int      @id @default(autoincrement())
-  staffid Int
+  staffid Int 
   username String   
   password String
+  role String @default("user")
   createdAt DateTime @default(now())
 }
 
@@ -49,5 +50,10 @@ model tasks{
 }
 
 model taskphotos{
-
+  taskphotoid       Int      @id @default(autoincrement())
+  taskid Int
+  categoryid Int
+  categorydetailid Int
+  photodataurl String
+  createdAt DateTime @default(now())
 }

@@ -6,22 +6,31 @@ import StaffAddNew from "../components/staff/addnew";
 import { StaffTable } from "../components/staff/table";
 import { StaffObj } from "../components/staff/types";
 import Toast from "../components/common-comp/toast";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { WithRole } from "../components/common-comp/withRole";
+import Spinner from "../dashboard/loading";
 
 
 export default function Staff() {
 
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <div><Spinner/></div>;
+  }
+
+  if (!session) {
+    router.push('/'); // Redirect to login page if not authenticated
+    return null;
+  }
+
   const [staffRowData, setStaffRowData] = useState<StaffObj[]>([]);
   const [reloadTable, setReloadTable] = useState(false);
 
-  // const [successfulToast, setSuccessfulToast] = useState(true);
-
-
-  // const closeButtonAction = () => {
-  //   setSuccessfulToast(false);
-  // }
-
-  const toggleReloadTable = () =>{
-    setReloadTable((prv:boolean)=> !prv)
+  const toggleReloadTable = () => {
+    setReloadTable((prv: boolean) => !prv)
   }
 
   useEffect(() => {
@@ -33,29 +42,29 @@ export default function Staff() {
       );
       const res = await staff_details.json();
       setStaffRowData(res.staff);
-      console.log("res",res,)
+      console.log("res", res,)
     };
 
     // call the function
     fetchData().catch(console.error);
   }, [reloadTable]);
   return (
-    <div>
-      <Navbar />
-      <div className="flex items-center justify-center p-4">
-        <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
-          Staff
-        </h1>
-        <StaffAddNew buttonName="Add New" setReloadTable={toggleReloadTable}/>
-      </div>
+    <WithRole roles={['admin']}>
       <div>
-        {staffRowData && (
-          <StaffTable staffRowData={staffRowData} setReloadTable={toggleReloadTable} />
-        )}
+        <Navbar />
+        <div className="flex items-center justify-center p-4">
+          <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
+            Staff
+          </h1>
+          <StaffAddNew buttonName="Add New" setReloadTable={toggleReloadTable} />
+        </div>
+        <div>
+          {staffRowData && (
+            <StaffTable staffRowData={staffRowData} setReloadTable={toggleReloadTable} />
+          )}
+        </div>
       </div>
-      {/* {successfulToast && (
-        < Toast title="Succes" description="Staff Created successfully!" buttonColour="bg-green-600 dark:bg-green-700" closeButtonAction={closeButtonAction} />)} */}
-    </div>
+    </WithRole>
   );
 }
 

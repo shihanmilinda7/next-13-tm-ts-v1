@@ -7,7 +7,7 @@ import { StaffObj } from "./types";
 export const StaffTable = ({ staffRowData, setReloadTable }: { staffRowData: StaffObj[],setReloadTable: ()=> void }) => {
     // const [reloadTable, setReloadTable] = useState(false);
 
-    const tableHeads = ["#", "Name", "Contract Type", "Contact No", "NIC", ""];
+    const tableHeads = ["#", "Name", "Contract Type","Role", "Contact No", "NIC", ""];
     console.log("ddd", staffRowData,)
     return (
         <div className="md:px-2 py-2 w-full">
@@ -28,6 +28,7 @@ export const StaffTable = ({ staffRowData, setReloadTable }: { staffRowData: Sta
                                 <td className="text-left py-3 px-4 font-bold">{index + 1}</td>
                                 <td className="text-left py-3 px-4">{tableRow.staffname}</td>
                                 <td className="text-left py-3 px-4">{tableRow.contracttype}</td>
+                                <td className="text-left py-3 px-4">{tableRow.role}</td>
                                 <td className="text-left py-3 px-4">{tableRow.contactno}</td>
                                 <td className="text-left py-3 px-4">{tableRow.nic}</td>
                                 {/* <td className="p-4 cursor-pointer hover:text-amber-900 hover:font-extrabold" onClick={()=>selRow(tableRow)}>Edit</td> */}

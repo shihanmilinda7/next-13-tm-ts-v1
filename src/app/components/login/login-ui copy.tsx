@@ -3,44 +3,61 @@
 import { useGlobalContext } from "@/app/globalContext/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+// import { StaffObj } from "../staff/types";
 import { ApiResult } from "@/app/types";
 import { UserType } from "../staff/types";
 import Toast from "../common-comp/toast";
-import { signIn, useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+// import Toast from "./toast";
+
+import {toast} from "react-toastify";
 
 
 const Login = () => {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  // const [user, setUser] =useState<UserType>()
 
-  // const { userId, setUserId, data, setData } = useGlobalContext();
+  const { userId, setUserId, data, setData } = useGlobalContext();
 
   const router = useRouter();
+  // const [showToast, setShowToast] = useState(false);
+
+  // const closeButtonAction = () =>{
+  //   setShowToast(false);
+  // }
+  // useEffect(() => {
+  //   console.log("user Obj",user,)
+  //   setUserId(user?.username ?? "");
+  //     setData([
+  //       { userid: user?.userid, staffid : user?.staffid, username : user?.username }, 
+  //     ]);
+  //   },[isLoggedIn]);
 
   const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const user_login = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-    try {
-      const response = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
-      });
-      if (response?.error) {
-        toast.error('Username or Password Incorrect!', {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
+    const res = await user_login.json() as ApiResult;
+
+    // setUser(tmpUser);
+    // console.log(res.message);
+    // console.log(staffObject);
+    // console.log(res.data[0]);
+    // console.log(tmpUser);
+    
+    if (res.message == "SUCCESS") {
+      const tmpUser = res.data[0] as UserType;
+      setIsLoggedIn(true)
+      setUserId(tmpUser.userid ?? 0);
+      setData([
+        { staffid: tmpUser?.staffid, username: tmpUser?.username },
+      ]);
+      router.push('/dashboard')
       toast.success('Logged in successfully!', {
         position: "top-right",
         autoClose: 1000,
@@ -50,71 +67,35 @@ const Login = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-      });
-      router.push('/dashboard')
-    } catch (error) {
-      console.log("System error please reload!", error,)
-      toast.error("error", {
+        });
+    } else {
+      toast.error('Username or Password Incorrect!', {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
-      });
+        });
+      // console.log("res",res,)
+    // setShowToast(true);
+    // setTimeout(() => {
+    //   setShowToast(false);
+    // }, 3000);
+    //   router.push('/')
     }
-
-    // const user_login = await fetch("/api/login", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ username, password }),
-    // });
-
-    // const res = await user_login.json() as ApiResult;
-
-    // if (res.message == "SUCCESS") {
-    //   const tmpUser = res.data[0] as UserType;
-    //   setIsLoggedIn(true)
-    //   setUserId(tmpUser.userid ?? 0);
-    //   setData([
-    //     { staffid: tmpUser?.staffid, username: tmpUser?.username },
-    //   ]);
-    //   router.push('/dashboard')
-    //   toast.success('Logged in successfully!', {
-    //     position: "top-right",
-    //     autoClose: 1000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    //     });
-    // } else {
-    //   toast.error('Username or Password Incorrect!', {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "light",
-    //     });
-    // }
-    // return res;
+    return res;
   };
-
   return (
     <div className="relative min-h-screen flex">
       <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
         <div className="sm:w-1/2 xl:w-3/5 h-full hidden md:flex flex-auto items-center justify-center p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative">
           <div className="absolute bg-gradient-to-b from-indigo-600 to-blue-500 opacity-75 inset-0 z-0"></div>
           <div className="w-full  max-w-md z-10">
-            <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">Next Generation Task Monitering </div>
-            <div className="sm:text-sm xl:text-md text-gray-200 font-normal"> "Discover streamlined productivity with NextTask - the ultimate task management solution. Effortlessly create, prioritize, and collaborate on tasks. Never miss a deadline again, stay organized, and achieve your goals with ease. Join the productivity revolution - sign up for NextTask today."</div>
+            <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">Next Generation Project Monitering </div>
+            <div className="sm:text-sm xl:text-md text-gray-200 font-normal"> The Project Monitoring Web App is a powerful tool designed to streamline and enhance the process of overseeing and managing projects. It provides real-time visibility into project progress, performance, and key metrics, enabling project managers and stakeholders to make informed decisions and take timely actions. The web app offers a user-friendly interface and a range of features to facilitate efficient project monitoring.</div>
           </div>
           <ul className="circles">
             <li></li>

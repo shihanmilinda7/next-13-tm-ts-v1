@@ -3,7 +3,7 @@ import { prisma } from "@/db";
 import { Prisma } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { NextResponse } from "next/server";
-
+import bcrypt from "bcryptjs";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     }
     console.log("selectedColumnsObj11", selectedColumns,)
 
-    const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password FROM staff AS s JOIN users AS u ON s.staffid = u.staffid`;
+    const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password,u.role FROM staff AS s JOIN users AS u ON s.staffid = u.staffid`;
     const staff : StaffObj[] = await prisma.$queryRaw(rawQuery);
 
     // const staff = await prisma.staff.findMany({
@@ -34,7 +34,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const { staffname, contracttype, contactno, nic, password, username } = await request.json();
+    const { staffname, contracttype, contactno, nic, password, username,role } = await request.json();
+    const hashedPassword = await bcrypt.hash(password,10);
+    console.log("hashedPassword",hashedPassword,)
     let message: string = "SUCCESS"
     try {
         await prisma.$transaction(async (tx) => {
@@ -61,7 +63,8 @@ export async function POST(request: Request) {
                     data: {
                         staffid: headerId,
                         username,
-                        password
+                        password:hashedPassword,
+                        role,
                     },
                 });
             }
@@ -69,38 +72,17 @@ export async function POST(request: Request) {
             return ""
         })
 
-
-
-
-
-        // const staff = await prisma.staff.create({
-        //     data: {
-        //         staffname,
-        //         contracttype,
-        //         contactno,
-        //         nic,
-        //     },
-        // });
-
-        // if (staff.staffid) {
-        //     await prisma.users.create({
-        //         data: {
-        //             staffid: staff.staffid,
-        //             username,
-        //             password
-        //         },
-        //     });
-        // }
     } catch (error) {
         console.error('Error adding new staff:', error);
         message = "FAIL"
     }
-    //   return NextResponse.json({message:"SUCCESS",newUser})
     return NextResponse.json(message)
 }
 
 export async function PUT(request: Request) {
-    const { staffid, staffname, contracttype, contactno, nic, password, username,userid } = await request.json();
+    const { staffid, staffname, contracttype, contactno, nic, password, username,userid,role } = await request.json();
+    const hashedPassword = await bcrypt.hash(password,10);
+
     let message: string = "SUCCESS"
     try {
 
@@ -122,7 +104,8 @@ export async function PUT(request: Request) {
                 where: { userid },
                 data: {
                     username,
-                    password
+                    password:hashedPassword,
+                    role
                 },
             });
 

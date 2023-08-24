@@ -4,76 +4,62 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar/navbar";
 import { useGlobalContext } from "../globalContext/store";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import Spinner from "./loading";
 
 type TaskDashBoardObj = {
-    taskid?:number;
-    location?:string;   
-    clientname?:string ;  
-    categoryid?:number;   
+    taskid?: number;
+    location?: string;
+    clientname?: string;
+    categoryid?: number;
     categoryname?: string;
 }
 
 export default function Dashboard() {
+    const router = useRouter();
+    const { data: session, status } = useSession();
 
-  const [taskData, setTaskData] = useState<TaskDashBoardObj[]>([]);
-  const { userId, setUserId, data, setData } = useGlobalContext();
-  const router = useRouter();
-    // const [taskData, setTaskData] = useState([]);
-    const [staffid, setStaffid] = useState(data?.[0]?.staffid)
+    if (status === 'loading') {
+        return <div><Spinner/></div>;
+    }
 
-    console.log("userId",userId,)
-    console.log("data",data?.[0]?.staffid)
+    if (!session) {
+        router.push('/'); // Redirect to login page if not authenticated
+        return null;
+    }
+    const tmpUser = session?.user;
+
+    const { userId, setUserId, data, setData } = useGlobalContext();
+    const [taskData, setTaskData] = useState<TaskDashBoardObj[]>([]);
+    const [staffid, setStaffid] = useState(tmpUser?.staffid)
+
+
     useEffect(() => {
         // declare the data fetching function
         const fetchData = async () => {
             const columns = JSON.stringify({ staffid: true })
             const task_details = await fetch(
-                // "api/task/get_task_as_staffid?staffid="+staffid
-                "api/task/get_task_as_staffid?staffid="+staffid+"&status=Not%20Completed",
+                "api/task/get_task_as_staffid?staffid=" + staffid + "&status=Not%20Completed",
             );
             const res = await task_details.json();
             setTaskData(res.tasks);
-            // console.log("res", res,)
         };
 
         // call the function
         fetchData().catch(console.error);
     }, []);
 
-    const taskClickEvent = (task:TaskDashBoardObj) => {
-        // console.log("task",task,)
-        // const taskid = task["taskid"]
-        // console.log("taskid",task["taskid"])
-        // const taskParam = task["taskid"]+"##"+task["clientname"]+"##"+task["categoryid"]
-        // window.location.href = "/task/task-submit?taskid="+task.taskid+"&clientname="+task.clientname+"&location="+task.location+"&categoryid="+task.categoryid+"&categoryname="+task.categoryname
-        router.push("/task/task-submit?taskid="+task.taskid+"&clientname="+task.clientname+"&location="+task.location+"&categoryid="+task.categoryid+"&categoryname="+task.categoryname)
-        // window.location.href = "/task_detail_staff/" + { task["taskid"], task["categoryid"]}
+    const taskClickEvent = (task: TaskDashBoardObj) => {
+        router.push("/task/task-submit?taskid=" + task.taskid + "&clientname=" + task.clientname + "&location=" + task.location + "&categoryid=" + task.categoryid + "&categoryname=" + task.categoryname)
     }
-
-    // useEffect(() => {
-    //     // declare the data fetching function
-    //     const fetchData = async () => {
-    //         const task_details = await fetch(
-    //             "api/task/get_sel_task_details",
-    //             {
-    //                 method: "POST",
-    //                 headers: { "Content-Type": "application/json" },
-    //                 body: JSON.stringify({ selectedColumns: { taskid: true, clientname: true, location: true, categoryid: true }, staffid: "1" }),
-    //             }
-    //         );
-    //         const res = await task_details.json();
-    //         setTaskData(res.tasks);
-    //     };
-    //     // call the function
-    //     fetchData().catch(console.error);
-    // }, []);
 
     return (
         <div>
             <Navbar />
-            <h1 className="text-2xl m-4 text-indigo-800 font-semibold">Insights at a Glance: Your Project Dashboard</h1>
-
-            {/* <Webcam/> */}
+            {/* <h1 className="text-2xl m-4 text-indigo-800 font-semibold">Insights at a Glance: Your Project Dashboard</h1> */}
+            <h1 className="text-2xl m-4 text-indigo-800 font-semibold">NextTask Dashboard: Your command center for tasks and goals. Elevate productivity today.</h1>
 
             <div className="flex flex-wrap pt-4">
                 <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
@@ -163,59 +149,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
-                        <div className="flex-auto p-4">
-                            <div className="flex flex-wrap">
-                                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                                    <h5 className="text-blueGray-400 uppercase font-bold text-xs">Performance</h5>
-                                    <span className="font-semibold text-xl text-blueGray-700">51.02% </span>
-                                </div>
-                                <div className="relative w-auto pl-4 flex-initial">
-                                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-emerald-500">
-                                        <i className="fas fa-percent"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <p className="text-sm text-blueGray-400 mt-4">
-                                <span className="text-emerald-500 mr-2"><i className="fas fa-arrow-up"></i> 12% </span>
-                                <span className="whitespace-nowrap"> Since last mounth </span></p>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         </div>
     );
 }
-
-// {/* <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
-//           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
-//             <div className="flex-auto p-4">
-//               <div className="flex flex-wrap">
-//                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1 flex-col">
-//                   <h4 className="text-indigo-900 uppercase text-2xl mb-4">Assigned Tasks</h4>
-//                   {/* <h4 className="text-indigo-800 font-semibold text-xl text-blueGray-700 mb-4"> Remaining Tasks - {JSON.stringify(taskData.length)}</h4> */}
-//                   {/* <h5>{JSON.stringify(taskData[0])}</h5> */}
-//                   <div className="flex flex-col">
-//                     {taskData.map((task, index) => (
-//                       <div className=" border-b-2 cursor-pointer border-indigo-700" onClick={()=>taskClickEvent(task)}>
-//                         <h5 className="font-semibold text-xl text-blueGray-700">{task["clientname"]}</h5>
-//                         {/* <i className=	"fas fa-map-marker-alt"></i> */}
-//                         <h5 className="font-semibold text-sm text-blueGray-700">{task["location"]}</h5>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-//                 <div className="relative w-auto pl-4 flex-initial">
-//                   <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-green-500">
-//                     <i className="fas fa-chart-bar">{JSON.stringify(taskData.length)}</i>
-//                   </div>
-//                 </div>
-//               </div>
-//               {/* <p className="text-sm text-blueGray-400 mt-4"> */}
-//               {/* <span className="text-emerald-500 mr-2"><i className="fas fa-arrow-up"></i> 2,99% </span> */}
-//               {/* <span className="whitespace-nowrap"> Since last month </span></p> */}
-//             </div>
-//           </div>
-//         </div> */}

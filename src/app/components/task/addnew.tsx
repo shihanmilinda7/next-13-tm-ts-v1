@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import TextInputField from '../common-comp/input-fields/text-input-fields';
-import { TaskObj } from './types';
+import { TaskObj, TaskObjExtend } from './types';
 import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import SelectBoxInputField from '../common-comp/input-fields/select-input-field';
 import { StaffObj } from '../staff/types';
@@ -11,12 +11,13 @@ import { CategoryDetailObj, CategoryObj } from '../category/types';
 import IntegerInputField from '../common-comp/input-fields/number-input-field';
 import { useRouter } from 'next/navigation';
 import { toast } from "react-toastify";
+import { inputFieldValidation } from '@/app/utils/utils';
 
 type ParamTypes = {
   buttonName: string;
   selRowData?: TaskObj;
   delButton?: boolean;
-  setReloadTable?: ()=> void;
+  setReloadTable?: () => void;
 }
 
 const TaskAddNew = (params: ParamTypes) => {
@@ -62,7 +63,7 @@ const TaskAddNew = (params: ParamTypes) => {
     getCategoryValues();
     if (categoryid) {
       fetchCatDetailsData(categoryid);
-  }
+    }
   }, []);
 
   //show category details
@@ -70,11 +71,12 @@ const TaskAddNew = (params: ParamTypes) => {
     setShowCatDetails(!showCatDetails);
   }
 
+
   //fetch category details as sel category data
   const fetchCatDetailsData = async (categoryid: string | number) => {
     const fetchData = async () => {
       const all_cat_details = await fetch(
-        "api/category/get_cat_as_catid?categoryid="+categoryid,
+        "api/category/get_cat_as_catid?categoryid=" + categoryid,
       );
       const res = await all_cat_details.json();
       setFetchedCategoryDetailsData(res.categoriesData);
@@ -133,99 +135,106 @@ const TaskAddNew = (params: ParamTypes) => {
     if (taskid) {
       update();
     } else {
+      console.log("ad new working",)
       addnew();
     }
   }
 
   //add new staff action
   const addnew = async () => {
-    const res_addnew_task = await fetch(
-      "api/task",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ staffid, clientname, categoryid, location, visitcount }),
+    const validation = inputFieldValidation({ staffid, clientname, categoryid, location, visitcount });
+
+    console.log("validation",validation > 0,)
+    if (validation == 0) {
+      const res_addnew_task = await fetch(
+        "api/task",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ staffid, clientname, categoryid, location, visitcount }),
+        }
+      );
+
+      const res = await res_addnew_task.json();
+      console.log(res);
+
+      if (res == "SUCCESS") {
+        setIsOpen(false);
+        if (params.setReloadTable) {
+          params.setReloadTable();
+        }
+        toast.success('Task crated successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        toast.error('Errorf !', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-    );
 
-    const res = await res_addnew_task.json();
-    console.log(res);
-
-    if (res == "SUCCESS") {
-      setIsOpen(false);
-      if( params.setReloadTable){
-        params.setReloadTable();
-      }
-      toast.success('Task crated successfully!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else {
-      toast.error('Error!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-     }
-
-    return res;
-
+      return res;
+    }
   };
 
   //update task action
   const update = async () => {
-    const responseUpdateStaff = await fetch(
-      "api/task",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taskid, staffid, clientname, categoryid, location, visitcount }),
-      }
-    );
+    const validation = inputFieldValidation({ staffid, clientname, categoryid, location, visitcount });
+    if (validation == 0) {
+      const responseUpdateStaff = await fetch(
+        "api/task",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ taskid, staffid, clientname, categoryid, location, visitcount }),
+        }
+      );
 
-    const res = await responseUpdateStaff.json();
+      const res = await responseUpdateStaff.json();
 
-    if (res == "SUCCESS") {
-      setIsOpen(false);
-      if( params.setReloadTable){
-        params.setReloadTable();
+      if (res == "SUCCESS") {
+        setIsOpen(false);
+        if (params.setReloadTable) {
+          params.setReloadTable();
+        }
+        toast.success('Task updated successfully!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        toast.error('Error!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-      toast.success('Task updated successfully!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else { 
-      toast.error('Error!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
+      return res;
     }
-
-    return res;
-
   };
 
   //delete task action
@@ -243,7 +252,7 @@ const TaskAddNew = (params: ParamTypes) => {
       const res = await responseDelTask.json();
       if (res == "SUCCESS") {
         setIsOpen(false);
-        if( params.setReloadTable){
+        if (params.setReloadTable) {
           params.setReloadTable();
         }
         toast.success('Task deleted successfully!', {
@@ -267,9 +276,9 @@ const TaskAddNew = (params: ParamTypes) => {
           progress: undefined,
           theme: "light",
         });
-       }
+      }
     } else {
-      if( params.setReloadTable){
+      if (params.setReloadTable) {
         params.setReloadTable();
       }
       router.push("/task")
@@ -321,13 +330,13 @@ const TaskAddNew = (params: ParamTypes) => {
               </div>
               <h1 className="text-indigo-800 font-semiboldd hover:font-bold cursor-pointer mb-4" onClick={showCategoryDeatils}>{showCatDetails ? "Show Less" : "Show More"}</h1>
               <div className={showCatDetails ? "grid grid-cols-2 gap-4 content-start w-full  px-3" : "flex hidden"}>
-                {fetchedCategoryDetailsData.map((data:CategoryDetailObj, index) => (
-                   <input 
-                   key={data.categorydetailid}
-                   type="text"
-                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                   value = {data.categorydetailname}
-                   />
+                {fetchedCategoryDetailsData.map((data: CategoryDetailObj, index) => (
+                  <input
+                    key={data.categorydetailid}
+                    type="text"
+                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    value={data.categorydetailname}
+                  />
                 ))}
               </div>
               <div className="-mx-3 flex flex-wrap px-3">

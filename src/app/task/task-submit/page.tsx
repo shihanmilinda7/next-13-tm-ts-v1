@@ -4,9 +4,12 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { CategoryDetailObj } from "@/app/components/category/types";
 import ConfirmAlertbox from "@/app/components/common-comp/confirm-alertbox";
 import WebcamComponent from "@/app/components/common-comp/web-cam";
+import { WithRole } from "@/app/components/common-comp/withRole";
 import Navbar from "@/app/components/navbar/navbar";
+import Spinner from "@/app/dashboard/loading";
 import { ApiResult } from "@/app/types";
 import { UploadButton } from "@uploadthing/react";
+import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -22,6 +25,19 @@ type taskPhotoObjTypes = {
 
 export default function Task() {
   const router = useRouter()
+
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <div><Spinner/></div>;
+  }
+
+  if (!session) {
+    router.push('/'); // Redirect to login page if not authenticated
+    return null;
+  }
+
+
   //get pathname
   let pathname: string = "";
 
@@ -37,6 +53,8 @@ export default function Task() {
     }
     // console.log("pathname", pathname);
   }
+
+
 
   const searchParams = useSearchParams();
   const taskid = searchParams.get('taskid');
@@ -155,66 +173,68 @@ export default function Task() {
   }, [fetchedCategoryDetailsData, taskPhotos])
 
   return (
-    <div>
-      <Navbar />
-      <div className="flex items-center justify-center p-4">
-        <h1 className="text-xl md:text-2xl lg:text-base xl:text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
-          Task Submission
-        </h1>
-      </div>
-      <div className="flex flex-wrap pt-4">
-        <div className="ml-5 mr-5 w-full border-b-2 border-t-2 cursor-pointer border-indigo-700">
-          {/* <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
+    <WithRole roles={['admin', 'user']}>
+
+      <div>
+        <Navbar />
+        <div className="flex items-center justify-center p-4">
+          <h1 className="text-xl md:text-2xl lg:text-base xl:text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
+            Task Submission
+          </h1>
+        </div>
+        <div className="flex flex-wrap pt-4">
+          <div className="ml-5 mr-5 w-full border-b-2 border-t-2 cursor-pointer border-indigo-700">
+            {/* <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
             Prev
           </button> */}
-          <h5 className="font-semibold text-xl md:text-xl lg:text-base xl:text-2xl text-blueGray-700">{clientname} - {location}</h5>
-          <h5 className="font-semibold text-sm md:text-sm lg:text-base xl:text-xl text-blueGray-700">Category: {categoryname}</h5>
-        </div>
-        <div>
+            <h5 className="font-semibold text-xl md:text-xl lg:text-base xl:text-2xl text-blueGray-700">{clientname} - {location}</h5>
+            <h5 className="font-semibold text-sm md:text-sm lg:text-base xl:text-xl text-blueGray-700">Category: {categoryname}</h5>
+          </div>
+          <div>
 
+          </div>
         </div>
-      </div>
-      <div className="flex flex-wrap pt-4">
-        {fetchedCategoryDetailsData.map((task, index) => {
-          const taskPhotoObject = taskPhotos.find((p: taskPhotoObjTypes) => p.categorydetailid == task.categorydetailid)
-          // console.log("taskPhotoObject",taskPhotoObject?.taskphotoid)
-          return (
-            <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
-              <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
-                <div className="flex-auto p-4">
-                  <div className="flex flex-wrap">
-                    <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                      <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
-                      <WebcamComponent
-                        taskDetails={task}
-                        taskid={taskidInt}
-                        pathname={pathname}
-                        taskphotoid={taskPhotoObject?.taskphotoid ?? 0}
-                        photodataurl={taskPhotoObject?.photodataurl ?? ''}
-                        setReloadPage={toggleReloadPage}
-                      />
+        <div className="flex flex-wrap pt-4">
+          {fetchedCategoryDetailsData.map((task, index) => {
+            const taskPhotoObject = taskPhotos.find((p: taskPhotoObjTypes) => p.categorydetailid == task.categorydetailid)
+            // console.log("taskPhotoObject",taskPhotoObject?.taskphotoid)
+            return (
+              <div key={task.categorydetailid} className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+                <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+                  <div className="flex-auto p-4">
+                    <div className="flex flex-wrap">
+                      <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
+                        <h5 className="text-blueGray-400 uppercase font-bold text-xl mb-3">{task.categorydetailname}</h5>
+                        <WebcamComponent
+                          taskDetails={task}
+                          taskid={taskidInt}
+                          pathname={pathname}
+                          taskphotoid={taskPhotoObject?.taskphotoid ?? 0}
+                          photodataurl={taskPhotoObject?.photodataurl ?? ''}
+                          setReloadPage={toggleReloadPage}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>)
-        })}
-      </div>
-      {endTaskButton && (
-        <div className="flex items-center justify-center">
-          <ConfirmAlertbox
-            buttonName="End Task"
-            leftButtonAction={endTaskClickEvent}
-            title="Are you sure?"
-            description="Do you want to end task ?"
-            buttonColour='bg-gradient-to-r from-green-500 to-green-600 hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600'
-          />
+              </div>)
+          })}
         </div>
-      )}
+        {endTaskButton && (
+          <div className="flex items-center justify-center">
+            <ConfirmAlertbox
+              buttonName="End Task"
+              leftButtonAction={endTaskClickEvent}
+              title="Are you sure?"
+              description="Do you want to end task ?"
+              buttonColour='bg-gradient-to-r from-green-500 to-green-600 hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600'
+            />
+          </div>
+        )}
 
 
 
-      {/* <UploadButton<OurFileRouter>
+        {/* <UploadButton<OurFileRouter>
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
           // Do something with the response
@@ -226,6 +246,7 @@ export default function Task() {
           alert(`ERROR! ${error.message}`);
         }}
       /> */}
-    </div>
+      </div>
+    </WithRole>
   );
 }

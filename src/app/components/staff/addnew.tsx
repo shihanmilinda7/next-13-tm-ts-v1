@@ -8,6 +8,8 @@ import ConfirmAlertbox from '../common-comp/confirm-alertbox';
 import { useRouter } from 'next/navigation';
 import Toast from '../common-comp/toast';
 import { toast } from "react-toastify";
+import SelectBoxInputField from '../common-comp/input-fields/select-input-field';
+import { inputFieldValidation } from '@/app/utils/utils';
 
 
 type ParamTypes = {
@@ -29,6 +31,7 @@ const StaffAddNew = (params: ParamTypes) => {
   const [contactno, setContactno] = useState(params.selRowData?.contactno ?? "");
   const [nic, setNic] = useState(params.selRowData?.nic ?? "");
   const [password, setPassword] = useState(params.selRowData?.password ?? "");
+  const [role, setRole] = useState(params.selRowData?.role ?? "");
   const [confirmpassword, setConfirmpassword] = useState(params.selRowData?.password ?? "");
   const [userid, setUserid] = useState(params.selRowData?.userid ?? "");
 
@@ -53,147 +56,322 @@ const StaffAddNew = (params: ParamTypes) => {
     }
   }
 
+  const roleOptionValues = [
+    { value: "", name: "Select role" },
+    { value: "admin", name: "Admin" },
+    { value: "user", name: "User" },
+  ]
+
   const submitButtonHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (staffid) {
-      console.log("sdfsdfsdfsdfsdfsdfs",)
       update();
     } else {
-      console.log("2312312312",)
       addnew();
     }
   }
 
+  const usernameValidation = async (username: string, staffid?: number | string) => {
+    console.log("staffid",staffid,)
+    // staffid 
+    const reponse = await fetch(
+      "api/staff/username-validation?username=" + username + "&staffid=" + staffid,
+    );
+    const res = await reponse.json();
+    return res.message
+  }
+
+
+
   //add new staff action
   const addnew = async () => {
-    if (password == confirmpassword) {
-      const responseNewStaff = await fetch(
-        "api/staff",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ staffname, contracttype, contactno, nic, password, username }),
+    const validation = inputFieldValidation({ staffname, contracttype, contactno, nic, password, username, role });
+    console.log("call addnew",)
+    try {
+      //check input field empty or not
+      if (validation == 0) {
+        //password validation
+        if (password != confirmpassword) {
+          toast.info('Password does not match!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          //username validation
+          const tmpUsernameValidation = await usernameValidation(username,0);
+          if (tmpUsernameValidation != 'FAIL') {
+            toast.info('Username already exists!', {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          } else {
+            //api call
+            const responseNewStaff = await fetch(
+              "api/staff",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ staffname, contracttype, contactno, nic, password, username, role }),
+              }
+            );
+            const res = await responseNewStaff.json();
+
+            if (res == "SUCCESS") {
+              setIsOpen(false);
+              if (params.setReloadTable) {
+                params.setReloadTable();
+              }
+              toast.success('Staff created successfully!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            }
+          }
         }
-      );
-
-      const res = await responseNewStaff.json();
-      console.log(res);
-
-
-      if (res == "SUCCESS") {
-        setIsOpen(false);
-        if (params.setReloadTable) {
-          params.setReloadTable();
-        }
-        toast.success('Staff created successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-
-        // router.push("/staff");
-      } else {
-        toast.error('Error!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
       }
-
-
-      // if (res == "SUCCESS") {
-      //   setSuccessfulToast(true);
-      //   setTimeout(() => {
-      //     setSuccessfulToast(false);
-      //   }, 1500);
-
-      //   setTimeout(() => {
-      //     setIsOpen(false);
-      //     if (params.setReloadTable) {
-      //       params.setReloadTable();
-      //     }
-      //   }, 1600);
-
-      //   // router.push("/staff");
-      // } else { }
-
-
-      // if (res == "SUCCESS") {
-      //   setIsOpen(false);
-      //   if (params.setReloadTable) {
-      //     params.setReloadTable();
-      //   }
-      //   setSuccessfulToast(true);
-      //   setTimeout(() => {
-      //     setSuccessfulToast(false);
-      //   }, 3000);
-      //  // router.push("/staff");
-      // } else { }
-
-      return res;
-    } else {
-      // setShowPasswordWarnAlert(true);
-      // setTimeout(() => {
-      //   setShowPasswordWarnAlert(false);
-      // }, 5000);
+    } catch (error) {
+      toast.error('Error!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
-  };
-
+  }
   //update staff action
   const update = async () => {
-    if (password == confirmpassword) {
-      const responseUpdateStaff = await fetch(
-        "api/staff",
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username }),
-        }
-      );
+    const validation = inputFieldValidation({ staffname, contracttype, contactno, nic, password, username, role });
 
-      const res = await responseUpdateStaff.json();
+    try {
+      //check input field empty or not
+      if (validation==0) {
+        //password validation
+        if (password != confirmpassword) {
+          toast.info('Password does not match!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          //username validation
+          const tmpUsernameValidation = await usernameValidation(username, staffid);
+          if (tmpUsernameValidation != 'FAIL') {
+            toast.info('Username already exists!', {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          } else {
+            //api call
+            const responseUpdateStaff = await fetch(
+              "api/staff",
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username, role }),
+              }
+            );
+            const res = await responseUpdateStaff.json();
 
-      if (res == "SUCCESS") {
-        setIsOpen(false);
-        if (params.setReloadTable) {
-          params.setReloadTable();
+            if (res == "SUCCESS") {
+              setIsOpen(false);
+              if (params.setReloadTable) {
+                params.setReloadTable();
+              }
+              toast.success('Staff created successfully!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            }
+          }
         }
-        toast.success('Staff updated successfully!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } else {
-        toast.error('Error!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
       }
-
-      return res;
+    } catch (error) {
+      toast.error('Error!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
-  };
+  }
+
+  // const update = async () => {
+
+  //   try {
+  //     //check input field empty or not
+  //     if (!staffname || !username || !contracttype || !contactno || !nic || !password || !role) {
+  //       toast.info('Field cannot be empty', {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: false,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //       });
+  //       return;
+  //     }
+
+  //     //username validation
+  //     const tmpUsernameValidation = await usernameValidation(username);
+  //     if (tmpUsernameValidation != 'FAIL') {
+  //       toast.info('Username already exists!', {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: false,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //       });
+  //       return;
+  //     }
+
+  //     //password validation
+  //     if (password != confirmpassword) {
+  //       toast.info('Password does not match!', {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: false,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //       });
+  //     }
+
+  //     //api call
+  //     const responseUpdateStaff = await fetch(
+  //       "api/staff",
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username, role }),
+  //       }
+  //     );
+  //     const res = await responseUpdateStaff.json();
+
+  //     if (res == "SUCCESS") {
+  //       setIsOpen(false);
+  //       if (params.setReloadTable) {
+  //         params.setReloadTable();
+  //       }
+  //       toast.success('Staff updated successfully!', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //       return;
+  //     }
+  //   } catch (error) {
+  //     toast.error('Error!', {
+  //       position: "top-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "colored",
+  //     });
+  //   }
+  // }
+
+  // const update = async () => {
+  //   if (password == confirmpassword) {
+  //     const responseUpdateStaff = await fetch(
+  //       "api/staff",
+  //       {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username }),
+  //       }
+  //     );
+
+  //     const res = await responseUpdateStaff.json();
+
+  //     if (res == "SUCCESS") {
+  //       setIsOpen(false);
+  //       if (params.setReloadTable) {
+  //         params.setReloadTable();
+  //       }
+  //       toast.success('Staff updated successfully!', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //     } else {
+  //       toast.error('Error!', {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //     }
+
+  //     return res;
+  //   }
+  // };
 
   const deleteAction = async () => {
     if (staffid) {
@@ -224,15 +402,16 @@ const StaffAddNew = (params: ParamTypes) => {
         });
       } else {
         toast.error('Error!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      }); }
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } else {
       // window.location.href = "/staff"
       if (params.setReloadTable) {
@@ -246,20 +425,11 @@ const StaffAddNew = (params: ParamTypes) => {
     <div>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+        className="flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600 hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
       >
         {params.buttonName}
       </button>
-      {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
       <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
-        {/* <TextInputField
-          id="staffid"
-          name="staffid"
-          type="hidden"
-          autocomplete=""
-          value={staffid}
-          onChange={(e) => setStaffid(e.target.value)}
-        /> */}
         <div className="pl-12 pb-1">
           <h1 className="text-2xl uppercase text-indigo-800">Add New Staff Member</h1>
         </div>
@@ -291,7 +461,7 @@ const StaffAddNew = (params: ParamTypes) => {
             </div>
 
             <div className="-mx-3 flex flex-wrap">
-              <div className="w-full px-3">
+              <div className="w-full px-3 sm:w-1/2">
                 <TextInputField
                   label="Username"
                   id="username"
@@ -300,6 +470,14 @@ const StaffAddNew = (params: ParamTypes) => {
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="w-full px-3 sm:w-1/2">
+                <SelectBoxInputField
+                  label="Role"
+                  value={role}
+                  options={roleOptionValues}
+                  onSelect={(e) => setRole(e.target.value)}
                 />
               </div>
             </div>

@@ -3,9 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 const Navbar = () => {
   const currentRoute = usePathname();
+  const { data: session, status } = useSession();
+  const userRole = session?.user?.role;
+  console.log("userRole",userRole,)
+
+  const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>)  => {
+    e.preventDefault();
+    await signOut();
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     const button = document.querySelector('#menu-button') as HTMLButtonElement | null;
@@ -23,19 +33,6 @@ const Navbar = () => {
         button.removeEventListener('click', clickHandler);
       };
     }
-    // const button = document.querySelector('#menu-button');
-    // const menu = document.querySelector('#menu');
-
-    // button.addEventListener('click', () => {
-    //   menu.classList.toggle('hidden');
-    // });
-
-    // // Clean up the event listener when the component unmounts
-    // return () => {
-    //   button.removeEventListener('click', () => {
-    //     menu.classList.toggle('hidden');
-    //   });
-    // };
   }, []);
 
 
@@ -45,7 +42,6 @@ const Navbar = () => {
   const nonActiveStyle = commonStyles + ' text-white';
 
   return (
-    // <header classNameName="navbar">
     <header>
       <nav
         className="
@@ -94,13 +90,11 @@ const Navbar = () => {
               md:pt-0"
           >
             <li><Link href="/dashboard" className={currentRoute === '/dashboard' ? activeStyle : nonActiveStyle}>Dashboard</Link></li>
-            <li><Link href="/staff" className={currentRoute === '/staff' ? activeStyle : nonActiveStyle}>Staff</Link></li>
-            <li><Link href="/category" className={currentRoute === '/category' ? activeStyle : nonActiveStyle}>Category</Link></li>
-            <li><Link href="/task" className={currentRoute === '/task' ? activeStyle : nonActiveStyle}>Task</Link></li>
-            {/* <li><Link href="/projects" className={currentRoute === '/projects' ? activeStyle : nonActiveStyle}>Projects</Link></li> */}
-            {/* <li><Link href={"/time_allocation/"+new Date().toJSON().slice(0, 10)} className={currentRoute === "/time_allocation/"+new Date().toJSON().slice(0, 10) ? activeStyle : nonActiveStyle}>Time Allocation</Link></li> */}
-            <li><Link href="/" className={currentRoute === '/' ? activeStyle : nonActiveStyle}>Report</Link></li>
-            <li><Link href="/" className={commonStyles}>Logout</Link></li>
+            <li className={userRole == 'admin' ? "" : "hidden"}><Link href="/staff" className={currentRoute === '/staff' ? activeStyle : nonActiveStyle}>Staff</Link></li>
+            <li className={userRole == 'admin' ? "" : "hidden"}><Link href="/category" className={currentRoute === '/category' ? activeStyle : nonActiveStyle}>Category</Link></li>
+            <li className={userRole == 'admin' ? "" : "hidden"}><Link href="/task" className={currentRoute === '/task' ? activeStyle : nonActiveStyle}>Task</Link></li>
+            <li className={userRole == 'admin' ? "" : "hidden"}><Link href="/" className={currentRoute === '/' ? activeStyle : nonActiveStyle}>Report</Link></li>
+            <button onClick={handleSignOut} className={commonStyles}>Logout</button>
           </ul>
         </div>
       </nav>
