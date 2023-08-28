@@ -11,7 +11,7 @@ const authOptions: NextAuthOptions = {
             name: "credentials",
             credentials: {},
 
-            async authorize(credentials) {
+            async authorize(credentials: Record<string, string> | undefined): Promise<any | null> {
                 
                 try {
                     if (!credentials?.username || !credentials?.password) {
