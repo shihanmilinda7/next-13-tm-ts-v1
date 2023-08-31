@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import Modal from 'react-modal'
-import TextInputField from '../common-comp/input-fields/text-input-fields';
-import { StaffObj } from './types';
-import ConfirmAlertbox from '../common-comp/confirm-alertbox';
-import { useRouter } from 'next/navigation';
-import Toast from '../common-comp/toast';
+import React, { useState } from "react";
+import Modal from "react-modal";
+import TextInputField from "../common-comp/input-fields/text-input-fields";
+import { StaffObj } from "./types";
+import ConfirmAlertbox from "../common-comp/confirm-alertbox";
+import { useRouter } from "next/navigation";
+import Toast from "../common-comp/toast";
 import { toast } from "react-toastify";
-import SelectBoxInputField from '../common-comp/input-fields/select-input-field';
-import { inputFieldValidation } from '@/app/utils/utils';
-
+import SelectBoxInputField from "../common-comp/input-fields/select-input-field";
+import { inputFieldValidation } from "@/app/utils/utils";
 
 type ParamTypes = {
   buttonName: string;
@@ -18,21 +17,29 @@ type ParamTypes = {
   delButton?: boolean;
   setReloadTable?: () => void;
   showAddnewAlert?: () => void;
-}
+};
 
 const StaffAddNew = (params: ParamTypes) => {
   const router = useRouter();
 
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const [staffid, setStaffid] = useState(params.selRowData?.staffid ?? "");
-  const [staffname, setStaffname] = useState(params.selRowData?.staffname ?? "");
+  const [staffname, setStaffname] = useState(
+    params.selRowData?.staffname ?? ""
+  );
   const [username, setUsername] = useState(params.selRowData?.username ?? "");
-  const [contracttype, setContracttype] = useState(params.selRowData?.contracttype ?? "");
-  const [contactno, setContactno] = useState(params.selRowData?.contactno ?? "");
+  const [contracttype, setContracttype] = useState(
+    params.selRowData?.contracttype ?? ""
+  );
+  const [contactno, setContactno] = useState(
+    params.selRowData?.contactno ?? ""
+  );
   const [nic, setNic] = useState(params.selRowData?.nic ?? "");
   const [password, setPassword] = useState(params.selRowData?.password ?? "");
   const [role, setRole] = useState(params.selRowData?.role ?? "");
-  const [confirmpassword, setConfirmpassword] = useState(params.selRowData?.password ?? "");
+  const [confirmpassword, setConfirmpassword] = useState(
+    params.selRowData?.password ?? ""
+  );
   const [userid, setUserid] = useState(params.selRowData?.userid ?? "");
 
   const [showDelButton, setShowDelButton] = useState(params.delButton);
@@ -40,59 +47,73 @@ const StaffAddNew = (params: ParamTypes) => {
   const [successfulToast, setSuccessfulToast] = useState(false);
   const closeButtonAction = () => {
     setSuccessfulToast(false);
-  }
+  };
 
   const customStyles = {
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.6)'
+      backgroundColor: "rgba(0, 0, 0, 0.6)",
     },
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-    }
-  }
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
 
   const roleOptionValues = [
     { value: "", name: "Select role" },
     { value: "admin", name: "Admin" },
     { value: "user", name: "User" },
-  ]
+  ];
 
-  const submitButtonHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const submitButtonHandler = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     if (staffid) {
       update();
     } else {
       addnew();
     }
-  }
+  };
 
-  const usernameValidation = async (username: string, staffid?: number | string) => {
-    console.log("staffid",staffid,)
-    // staffid 
+  const usernameValidation = async (
+    username: string,
+    staffid?: number | string
+  ) => {
+    console.log("staffid", staffid);
+    // staffid
     const reponse = await fetch(
-      "api/staff/username-validation?username=" + username + "&staffid=" + staffid,
+      "api/staff/username-validation?username=" +
+        username +
+        "&staffid=" +
+        staffid
     );
     const res = await reponse.json();
-    return res.message
-  }
-
-
+    return res.message;
+  };
 
   //add new staff action
   const addnew = async () => {
-    const validation = inputFieldValidation({ staffname, contracttype, contactno, nic, password, username, role });
-    console.log("call addnew",)
+    const validation = inputFieldValidation({
+      staffname,
+      contracttype,
+      contactno,
+      nic,
+      password,
+      username,
+      role,
+    });
+    console.log("call addnew");
     try {
       //check input field empty or not
       if (validation == 0) {
         //password validation
         if (password != confirmpassword) {
-          toast.info('Password does not match!', {
+          toast.info("Password does not match!", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -104,9 +125,9 @@ const StaffAddNew = (params: ParamTypes) => {
           });
         } else {
           //username validation
-          const tmpUsernameValidation = await usernameValidation(username,0);
-          if (tmpUsernameValidation != 'FAIL') {
-            toast.info('Username already exists!', {
+          const tmpUsernameValidation = await usernameValidation(username, 0);
+          if (tmpUsernameValidation != "FAIL") {
+            toast.info("Username already exists!", {
               position: "top-right",
               autoClose: 3000,
               hideProgressBar: false,
@@ -118,14 +139,19 @@ const StaffAddNew = (params: ParamTypes) => {
             });
           } else {
             //api call
-            const responseNewStaff = await fetch(
-              "api/staff",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ staffname, contracttype, contactno, nic, password, username, role }),
-              }
-            );
+            const responseNewStaff = await fetch("api/staff", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                staffname,
+                contracttype,
+                contactno,
+                nic,
+                password,
+                username,
+                role,
+              }),
+            });
             const res = await responseNewStaff.json();
 
             if (res == "SUCCESS") {
@@ -133,7 +159,7 @@ const StaffAddNew = (params: ParamTypes) => {
               if (params.setReloadTable) {
                 params.setReloadTable();
               }
-              toast.success('Staff created successfully!', {
+              toast.success("Staff created successfully!", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -148,9 +174,9 @@ const StaffAddNew = (params: ParamTypes) => {
         }
       }
     } catch (error) {
-      toast.error('Error!', {
+      toast.error("Error!", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -159,17 +185,25 @@ const StaffAddNew = (params: ParamTypes) => {
         theme: "colored",
       });
     }
-  }
+  };
   //update staff action
   const update = async () => {
-    const validation = inputFieldValidation({ staffname, contracttype, contactno, nic, password, username, role });
+    const validation = inputFieldValidation({
+      staffname,
+      contracttype,
+      contactno,
+      nic,
+      password,
+      username,
+      role,
+    });
 
     try {
       //check input field empty or not
-      if (validation==0) {
+      if (validation == 0) {
         //password validation
         if (password != confirmpassword) {
-          toast.info('Password does not match!', {
+          toast.info("Password does not match!", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -181,9 +215,12 @@ const StaffAddNew = (params: ParamTypes) => {
           });
         } else {
           //username validation
-          const tmpUsernameValidation = await usernameValidation(username, staffid);
-          if (tmpUsernameValidation != 'FAIL') {
-            toast.info('Username already exists!', {
+          const tmpUsernameValidation = await usernameValidation(
+            username,
+            staffid
+          );
+          if (tmpUsernameValidation != "FAIL") {
+            toast.info("Username already exists!", {
               position: "top-right",
               autoClose: 3000,
               hideProgressBar: false,
@@ -195,14 +232,21 @@ const StaffAddNew = (params: ParamTypes) => {
             });
           } else {
             //api call
-            const responseUpdateStaff = await fetch(
-              "api/staff",
-              {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userid, staffid, staffname, contracttype, contactno, nic, password, username, role }),
-              }
-            );
+            const responseUpdateStaff = await fetch("api/staff", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userid,
+                staffid,
+                staffname,
+                contracttype,
+                contactno,
+                nic,
+                password,
+                username,
+                role,
+              }),
+            });
             const res = await responseUpdateStaff.json();
 
             if (res == "SUCCESS") {
@@ -210,7 +254,7 @@ const StaffAddNew = (params: ParamTypes) => {
               if (params.setReloadTable) {
                 params.setReloadTable();
               }
-              toast.success('Staff created successfully!', {
+              toast.success("Staff created successfully!", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -225,9 +269,9 @@ const StaffAddNew = (params: ParamTypes) => {
         }
       }
     } catch (error) {
-      toast.error('Error!', {
+      toast.error("Error!", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -236,7 +280,7 @@ const StaffAddNew = (params: ParamTypes) => {
         theme: "colored",
       });
     }
-  }
+  };
 
   // const update = async () => {
 
@@ -304,7 +348,7 @@ const StaffAddNew = (params: ParamTypes) => {
   //       }
   //       toast.success('Staff updated successfully!', {
   //         position: "top-right",
-  //         autoClose: 5000,
+  //         autoClose: 3000,
   //         hideProgressBar: false,
   //         closeOnClick: true,
   //         pauseOnHover: true,
@@ -317,7 +361,7 @@ const StaffAddNew = (params: ParamTypes) => {
   //   } catch (error) {
   //     toast.error('Error!', {
   //       position: "top-right",
-  //       autoClose: 5000,
+  //       autoClose: 3000,
   //       hideProgressBar: false,
   //       closeOnClick: true,
   //       pauseOnHover: true,
@@ -348,7 +392,7 @@ const StaffAddNew = (params: ParamTypes) => {
   //       }
   //       toast.success('Staff updated successfully!', {
   //         position: "top-right",
-  //         autoClose: 5000,
+  //         autoClose: 3000,
   //         hideProgressBar: false,
   //         closeOnClick: true,
   //         pauseOnHover: true,
@@ -359,7 +403,7 @@ const StaffAddNew = (params: ParamTypes) => {
   //     } else {
   //       toast.error('Error!', {
   //         position: "top-right",
-  //         autoClose: 5000,
+  //         autoClose: 3000,
   //         hideProgressBar: false,
   //         closeOnClick: true,
   //         pauseOnHover: true,
@@ -375,14 +419,11 @@ const StaffAddNew = (params: ParamTypes) => {
 
   const deleteAction = async () => {
     if (staffid) {
-      const responseDelStaff = await fetch(
-        "api/staff",
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ staffid, userid }),
-        }
-      );
+      const responseDelStaff = await fetch("api/staff", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ staffid, userid }),
+      });
 
       const res = await responseDelStaff.json();
       if (res == "SUCCESS") {
@@ -390,9 +431,9 @@ const StaffAddNew = (params: ParamTypes) => {
         if (params.setReloadTable) {
           params.setReloadTable();
         }
-        toast.success('Staff deleted successfully!', {
+        toast.success("Staff deleted successfully!", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -401,9 +442,9 @@ const StaffAddNew = (params: ParamTypes) => {
           theme: "light",
         });
       } else {
-        toast.error('Error!', {
+        toast.error("Error!", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -419,7 +460,7 @@ const StaffAddNew = (params: ParamTypes) => {
       }
       router.push("/staff");
     }
-  }
+  };
 
   return (
     <div>
@@ -429,9 +470,14 @@ const StaffAddNew = (params: ParamTypes) => {
       >
         {params.buttonName}
       </button>
-      <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        style={customStyles}
+        ariaHideApp={false}
+      >
         <div className="pl-12 pb-1">
-          <h1 className="text-2xl uppercase text-indigo-800">Add New Staff Member</h1>
+          <h1 className="text-2xl   text-indigo-800">Add New Staff Member</h1>
         </div>
         <div className="flex items-center justify-center p-12">
           <div className="mx-auto w-full max-w-[550px]">
@@ -532,29 +578,46 @@ const StaffAddNew = (params: ParamTypes) => {
             </div>
             <div className="flex">
               <div className="mr-3">
-                <button onClick={submitButtonHandler}
+                <button
+                  onClick={submitButtonHandler}
                   className="rounded-lg bg-gradient-to-r from-green-500 to-green-600  hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
                 >
                   Submit
                 </button>
               </div>
               <div>
-                <button onClick={() => setIsOpen(false)}
+                <button
+                  onClick={() => setIsOpen(false)}
                   className="rounded-lg bg-gradient-to-r from-amber-500 to-amber-600  hover:bg-gradient-to-l hover:from-amber-500 hover:to-amber-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
                 >
                   Cancel
                 </button>
               </div>
-              <div className={showDelButton ? "flex ml-auto" : "flex ml-auto hidden"}>
-                <ConfirmAlertbox buttonName="Delete" leftButtonAction={deleteAction} title="Are you sure?" description="Do you want to delete this record ?" />
+              <div
+                className={
+                  showDelButton ? "flex ml-auto" : "flex ml-auto hidden"
+                }
+              >
+                <ConfirmAlertbox
+                  buttonName="Delete"
+                  leftButtonAction={deleteAction}
+                  title="Are you sure?"
+                  description="Do you want to delete this record ?"
+                />
               </div>
             </div>
           </div>
           {successfulToast && (
-            < Toast title="Succes" description="Staff Created successfully!" buttonColour="bg-green-600 dark:bg-green-700" closeButtonAction={closeButtonAction} />)}
+            <Toast
+              title="Succes"
+              description="Staff Created successfully!"
+              buttonColour="bg-green-600 dark:bg-green-700"
+              closeButtonAction={closeButtonAction}
+            />
+          )}
         </div>
       </Modal>
     </div>
-  )
-}
-export default StaffAddNew
+  );
+};
+export default StaffAddNew;

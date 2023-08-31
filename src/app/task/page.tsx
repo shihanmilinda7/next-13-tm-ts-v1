@@ -63,9 +63,7 @@ export default function Task() {
       <div>
         <Navbar />
         <div className="flex items-center justify-center p-4">
-          <h1 className="text-4xl font-extrabold uppercase text-indigo-600 mr-auto">
-            Tasks
-          </h1>
+          <h1 className="text-4xl     text-indigo-600 mr-auto">Tasks</h1>
           <TaskAddNew buttonName="Add New" setReloadTable={toggleReloadTable} />
         </div>
         <div>
@@ -76,7 +74,7 @@ export default function Task() {
             />
           )}
         </div>
-        <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
+        {/* <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
           <div className="lg:w-3/5 w-full  flex items-center justify-between border-t border-gray-200">
             <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
               <svg
@@ -158,7 +156,7 @@ export default function Task() {
               </svg>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </WithRole>
   );

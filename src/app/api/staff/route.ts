@@ -104,7 +104,7 @@ export async function PUT(request: Request) {
                 where: { userid },
                 data: {
                     username,
-                    password:hashedPassword,
+                    // password:hashedPassword,
                     role
                 },
             });
