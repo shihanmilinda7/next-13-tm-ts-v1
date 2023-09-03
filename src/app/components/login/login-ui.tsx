@@ -10,8 +10,8 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const { userId, setUserId, data, setData } = useGlobalContext();
