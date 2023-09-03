@@ -47,6 +47,7 @@ model tasks{
   location String
   visitcount Int
   status String
+  completeddate String
 }
 
 model taskphotos{

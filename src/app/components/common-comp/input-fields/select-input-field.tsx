@@ -13,7 +13,7 @@ type InputFieldParams = {
 const SelectBoxInputField = ({ label, value, options, onSelect }: InputFieldParams) => {
     return (
 
-        <div className="mb-5">
+        <div className="">
             <label
                 htmlFor="fName"
                 className="mb-3 block text-base font-medium text-[#07074D]"

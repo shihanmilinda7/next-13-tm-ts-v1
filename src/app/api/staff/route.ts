@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     }
     console.log("selectedColumnsObj11", selectedColumns,)
 
-    const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password,u.role FROM staff AS s JOIN users AS u ON s.staffid = u.staffid`;
+    const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password,u.role FROM staff AS s JOIN users AS u ON s.staffid = u.staffid order by staffid desc`;
     const staff : StaffObj[] = await prisma.$queryRaw(rawQuery);
 
     // const staff = await prisma.staff.findMany({

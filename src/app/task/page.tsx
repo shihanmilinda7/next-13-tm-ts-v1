@@ -14,19 +14,6 @@ export default function Task() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/"); // Redirect to login page if not authenticated
-    return null;
-  }
-
   const [taskRowData, setTaskRowData] = useState<TaskObjExtend[]>([]);
   const [reloadTable, setReloadTable] = useState(false);
   const [tablePagination, setTablePaination] = useState(1);
@@ -58,6 +45,20 @@ export default function Task() {
     // call the function
     fetchData().catch(console.error);
   }, [reloadTable]);
+
+
+  if (status === "loading") {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/"); // Redirect to login page if not authenticated
+    return null;
+  }
   return (
     <WithRole roles={["admin"]}>
       <div>

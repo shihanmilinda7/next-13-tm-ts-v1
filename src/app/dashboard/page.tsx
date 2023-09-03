@@ -21,21 +21,8 @@ export default function Dashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/"); // Redirect to login page if not authenticated
-    return null;
-  }
   const tmpUser = session?.user;
 
-  const { userId, setUserId, data, setData } = useGlobalContext();
   const [taskData, setTaskData] = useState<TaskDashBoardObj[]>([]);
   const [staffid, setStaffid] = useState(tmpUser?.staffid);
 
@@ -55,7 +42,6 @@ export default function Dashboard() {
     // call the function
     fetchData().catch(console.error);
   }, []);
-
   const taskClickEvent = (task: TaskDashBoardObj) => {
     router.push(
       "/task/task-submit?taskid=" +
@@ -71,6 +57,18 @@ export default function Dashboard() {
     );
   };
 
+  if (status === "loading") {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/"); // Redirect to login page if not authenticated
+    return null;
+  }
   return (
     <div>
       <Navbar />
@@ -96,7 +94,7 @@ export default function Dashboard() {
                         onClick={() => taskClickEvent(task)}
                       >
                         <h5 className="font-semibold text-xl text-blueGray-700">
-                          {task["clientname"]}
+                          {index+1}. {task["clientname"]}
                         </h5>
                         <h5 className="font-semibold text-sm text-blueGray-700">
                           {task["location"]}

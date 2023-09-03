@@ -14,18 +14,7 @@ export default function Categoty() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/"); // Redirect to login page if not authenticated
-    return null;
-  }
+ 
 
   const [categoryRowData, setCategoryRowData] = useState<CategoryObj[]>([]);
   const [reloadTable, setReloadTable] = useState(false);
@@ -47,6 +36,19 @@ export default function Categoty() {
     // call the function
     fetchData().catch(console.error);
   }, [reloadTable]);
+
+  if (status === "loading") {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/"); // Redirect to login page if not authenticated
+    return null;
+  }
   return (
     <WithRole roles={["admin"]}>
       <div>

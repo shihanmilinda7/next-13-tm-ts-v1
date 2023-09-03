@@ -94,6 +94,8 @@ const CategoryAddNew = (params: ParamTypes) => {
         progress: undefined,
         theme: "light",
       });
+      setCategoryname("");
+      setCategoryValues([]);
     } else {
       toast.error("Error!", {
         position: "top-right",
@@ -135,6 +137,8 @@ const CategoryAddNew = (params: ParamTypes) => {
         progress: undefined,
         theme: "light",
       });
+      setCategoryname("");
+      setCategoryValues([]);
     } else {
       toast.error("Error!", {
         position: "top-right",
@@ -248,7 +252,9 @@ const CategoryAddNew = (params: ParamTypes) => {
         /> */}
         {/* <form onSubmit={submitButtonHandler}> */}
         <div className="pl-12 pb-1">
-          <h1 className="text-2xl   text-indigo-800">Add New Category</h1>
+          <h1 className="text-2xl   text-indigo-800">
+            {!categoryid ? "Add New Category" : "Edit Category"}
+          </h1>
         </div>
         <div className="flex items-center justify-center p-12">
           <div className="mx-auto w-full max-w-[550px]">
@@ -268,9 +274,9 @@ const CategoryAddNew = (params: ParamTypes) => {
             <div className="">
               <button
                 onClick={addInputField}
-                className="rounded-lg bg-white text-slate-700 py-3 px-8 text-center text-base font-semibold outline-none"
+                className="mb-2 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600  hover:bg-gradient-to-l hover:from-indigo-500 hover:to-indigo-600 text-white py-3 px-2 text-center text-base font-semibold outline-none"
               >
-                Photo Type +
+                Add Photo Type
               </button>
             </div>
             <div className="grid grid-cols-2 gap-4 content-start w-full px-3">
@@ -290,7 +296,7 @@ const CategoryAddNew = (params: ParamTypes) => {
                 )
               )}
             </div>
-            <div className="flex">
+            <div className="flex mt-6">
               <div className="mr-3">
                 <button
                   onClick={submitButtonHandler}

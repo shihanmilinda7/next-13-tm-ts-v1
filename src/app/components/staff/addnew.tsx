@@ -69,10 +69,26 @@ const StaffAddNew = (params: ParamTypes) => {
     { value: "user", name: "User" },
   ];
 
+  const contractTypeOptionValues = [
+    { value: "", name: "Select Contract Type" },
+    { value: "Training", name: "Training" },
+    { value: "Probation", name: "Probation" },
+    { value: "Permanent", name: "Permanent" },
+    { value: "Contract", name: "Contract" },
+    { value: "Assigment", name: "Assigment" },
+    { value: "Casual", name: "Casual" },
+  ];
+
   const submitButtonHandler = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+
+    console.log(
+      "new Date().toJSON().slice(0, 10)",
+      new Date().toJSON().slice(0, 10)
+    );
+    // console.log("new Date().toJSON().slice(0, 10)",new Date().getTime,)
     if (staffid) {
       update();
     } else {
@@ -169,6 +185,15 @@ const StaffAddNew = (params: ParamTypes) => {
                 progress: undefined,
                 theme: "colored",
               });
+              setStaffname("");
+              setUsername("");
+              setContracttype("");
+              setContactno("");
+              setNic("");
+              setPassword("");
+              setConfirmpassword("");
+              setRole("");
+              router.push("/staff");
             }
           }
         }
@@ -254,7 +279,7 @@ const StaffAddNew = (params: ParamTypes) => {
               if (params.setReloadTable) {
                 params.setReloadTable();
               }
-              toast.success("Staff created successfully!", {
+              toast.success("Staff updated successfully!", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -264,6 +289,16 @@ const StaffAddNew = (params: ParamTypes) => {
                 progress: undefined,
                 theme: "colored",
               });
+              // setStaffname("");
+              // setUsername("");
+              // setContracttype("");
+              // setContactno("");
+              // setNic("");
+              // setPassword("");
+              // setConfirmpassword("");
+              // setRole("");
+              router.push("/staff");
+              //window.location.href = "/staff"
             }
           }
         }
@@ -477,7 +512,9 @@ const StaffAddNew = (params: ParamTypes) => {
         ariaHideApp={false}
       >
         <div className="pl-12 pb-1">
-          <h1 className="text-2xl   text-indigo-800">Add New Staff Member</h1>
+          <h1 className="text-2xl   text-indigo-800">
+            {!staffid ? "Add New Staff Member" : "Edit Staff"}
+          </h1>
         </div>
         <div className="flex items-center justify-center p-12">
           <div className="mx-auto w-full max-w-[550px]">
@@ -494,7 +531,13 @@ const StaffAddNew = (params: ParamTypes) => {
                 />
               </div>
               <div className="w-full px-3 sm:w-1/2">
-                <TextInputField
+                <SelectBoxInputField
+                  label="Contract Type"
+                  value={contracttype}
+                  options={contractTypeOptionValues}
+                  onSelect={(e) => setContracttype(e.target.value)}
+                />
+                {/* <TextInputField
                   label="Contract Type"
                   id="contracttype"
                   name="contracttype"
@@ -502,7 +545,7 @@ const StaffAddNew = (params: ParamTypes) => {
                   placeholder="Contract Type"
                   value={contracttype}
                   onChange={(e) => setContracttype(e.target.value)}
-                />
+                /> */}
               </div>
             </div>
 

@@ -116,6 +116,7 @@ const TaskAddNew = (params: ParamTypes) => {
         staffData.map((s) => {
           return { value: s.staffid, name: s.staffname };
         });
+      optionArray.unshift({ value: "", name: "Select Staff" });
       setStaffOptionValues(optionArray);
     };
     fetchData().catch(console.error);
@@ -134,6 +135,8 @@ const TaskAddNew = (params: ParamTypes) => {
         categoryData.map((c) => {
           return { value: c.categoryid, name: c.categoryname };
         });
+      optionArray.unshift({ value: "", name: "Select Category" });
+
       setCategoryOptionValues(optionArray);
     };
     fetchData().catch(console.error);
@@ -152,7 +155,6 @@ const TaskAddNew = (params: ParamTypes) => {
     if (taskid) {
       update();
     } else {
-      console.log("ad new working");
       addnew();
     }
   };
@@ -199,6 +201,11 @@ const TaskAddNew = (params: ParamTypes) => {
           progress: undefined,
           theme: "light",
         });
+        setStaffid("");
+        setClientname("");
+        setCategoryid("");
+        setLocation("");
+        setVisitcount("");
       } else {
         toast.error("Errorf !", {
           position: "top-right",
@@ -256,6 +263,11 @@ const TaskAddNew = (params: ParamTypes) => {
           progress: undefined,
           theme: "light",
         });
+        setStaffid("");
+        setClientname("");
+        setCategoryid("");
+        setLocation("");
+        setVisitcount("");
       } else {
         toast.error("Error!", {
           position: "top-right",
@@ -334,7 +346,9 @@ const TaskAddNew = (params: ParamTypes) => {
         ariaHideApp={false}
       >
         <div className="pl-12 pb-1">
-          <h1 className="text-2xl   text-indigo-800">Create Task</h1>
+          <h1 className="text-2xl   text-indigo-800">
+            {!taskid ? "Create Task" : "Edit Task"}
+          </h1>
         </div>
         <div className="flex items-center justify-center p-12">
           <div className="mx-auto w-full max-w-[550px]">

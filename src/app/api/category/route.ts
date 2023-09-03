@@ -16,7 +16,9 @@ export async function GET(request: Request) {
     //     selectedColumnsObj = JSON.parse(selectedColumns);
     // }
     try {
-        const categoriesData = await prisma.categories.findMany({});
+        const categoriesData = await prisma.categories.findMany({ orderBy: {
+            categoryid: 'desc', // Order by the "name" field in ascending order
+          },});
         if (categoriesData.length > 0) {
             for (let i = 0; i < categoriesData.length; i++) {
                 const element : CategoryObj= categoriesData[i];

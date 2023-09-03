@@ -10,8 +10,8 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("admin");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const { userId, setUserId, data, setData } = useGlobalContext();
@@ -163,7 +163,7 @@ const Login = () => {
                     name="username"
                     type="text"
                     autoComplete=""
-                    placeholder=""
+                    placeholder="Enter your username"
                     onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>

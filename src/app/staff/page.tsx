@@ -15,19 +15,6 @@ export default function Staff() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/"); // Redirect to login page if not authenticated
-    return null;
-  }
-
   const [staffRowData, setStaffRowData] = useState<StaffObj[]>([]);
   const [reloadTable, setReloadTable] = useState(false);
 
@@ -48,6 +35,19 @@ export default function Staff() {
     // call the function
     fetchData().catch(console.error);
   }, [reloadTable]);
+
+  if (status === "loading") {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/"); // Redirect to login page if not authenticated
+    return null;
+  }
   return (
     <WithRole roles={["admin"]}>
       <div>
