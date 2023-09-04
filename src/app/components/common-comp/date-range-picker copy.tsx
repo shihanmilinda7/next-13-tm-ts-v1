@@ -28,7 +28,7 @@ const DateRangePickerComponent = ({
     const tmpStartDate = ranges.selection.startDate.toJSON().slice(0, 10);
     const tmpEndDate = ranges.selection.endDate.toJSON().slice(0, 10);
     const isoString = ranges.selection.startDate.toISOString();
-    console.log("isoString.split('T')[0]",isoString.split('T')[0],)
+    // console.log("isoString.split('T')[0]",isoString.split('T')[0],)
     setDateRangeDisp(tmpStartDate + " / " + tmpEndDate);
     onDateRangeChange(tmpStartDate, tmpEndDate);
   };

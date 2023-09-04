@@ -30,7 +30,7 @@ export default function Categoty() {
       const category_details = await fetch("api/category");
       const res = await category_details.json();
       setCategoryRowData(res.categoriesData);
-      console.log("res", res);
+      // console.log("res", res);
     };
 
     // call the function

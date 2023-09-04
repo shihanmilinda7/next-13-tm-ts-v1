@@ -19,7 +19,7 @@ export const TaskTable = ({
     "",
   ];
 
-  console.log("ddd", taskRowData);
+  // console.log("ddd", taskRowData);
   return (
     <div className="md:px-2 py-2 w-full">
       <div className="shadow overflow-y-scroll rounded border-b border-gray-200 w-full">

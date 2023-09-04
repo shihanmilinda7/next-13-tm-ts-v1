@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     await request.json();
   let message: string = "SUCCESS";
 
-  console.log("TYPEOF", typeof visitcount);
+  // console.log("TYPEOF", typeof visitcount);
   try {
     await prisma.$transaction(async (tx) => {
       // 1. addnew task .

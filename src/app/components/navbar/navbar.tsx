@@ -9,7 +9,7 @@ const Navbar = () => {
   const currentRoute = usePathname();
   const { data: session, status } = useSession();
   const userRole = session?.user?.role;
-  console.log("userRole", userRole);
+  // console.log("userRole", userRole);
 
   const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -38,12 +38,11 @@ const Navbar = () => {
   }, []);
 
   // styles for all links
-  const commonStyles =
-    "text-xl md:p-4 py-2 block text-white hover:font-bold";
+  const commonStyles = "md:p-4 py-2 block text-indigo-800 hover:font-bold";
   const activeStyle =
     // commonStyles + " rounded-t-lg bg-indigo-500 text-indigo-900";
     commonStyles + " overline";
-  const nonActiveStyle = commonStyles + " text-white";
+  const nonActiveStyle = commonStyles;
 
   return (
     <header>
@@ -56,14 +55,13 @@ const Navbar = () => {
           py-4
           md:py-0
           px-4
-          text-lg text-gray-700
-          bg-gradient-to-b from-indigo-600 to-blue-500
+          text-lg text-gray-700 bg-white p-4 border border-gray-200 shadow-md
         "
       >
-        <div className="flex">
+        <div className="flex ">
           <svg
-            height="50px"
-            width="50px"
+            height="45px"
+            width="45px"
             version="1.1"
             id="Layer_1"
             xmlns="http://www.w3.org/2000/svg"
@@ -72,11 +70,11 @@ const Navbar = () => {
             xmlSpace="preserve"
             fill="#000000"
           >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g
               id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></g>
             <g id="SVGRepo_iconCarrier">
               <g transform="translate(0 1)">
@@ -142,7 +140,9 @@ const Navbar = () => {
               </g>{" "}
             </g>
           </svg>
-          <h1 className="text-4xl text-red-100 italic flex items-center justify-center">CeyInfo - Taskmon</h1>
+          <h1 className="text-2xl text-indigo-700 italic flex items-center justify-center">
+            CeyInfo - Taskmon
+          </h1>
         </div>
 
         <svg

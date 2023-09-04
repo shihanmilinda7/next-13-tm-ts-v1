@@ -13,10 +13,10 @@ export async function GET(request: Request) {
     const selectedColumns: string = searchParams.get("columns") ?? "";
     let selectedColumnsObj: Prisma.staffSelect<DefaultArgs> | null = null;
     if (selectedColumns) {
-        console.log("selectedColumnsObj", selectedColumnsObj,)
+        // console.log("selectedColumnsObj", selectedColumnsObj,)
         selectedColumnsObj = JSON.parse(selectedColumns);
     }
-    console.log("selectedColumnsObj11", selectedColumns,)
+    // console.log("selectedColumnsObj11", selectedColumns,)
 
     const rawQuery = Prisma.sql`SELECT s.*,u.userid,u.username,u.password,u.role FROM staff AS s JOIN users AS u ON s.staffid = u.staffid order by staffid desc`;
     const staff : StaffObj[] = await prisma.$queryRaw(rawQuery);
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     const { staffname, contracttype, contactno, nic, password, username,role } = await request.json();
     const hashedPassword = await bcrypt.hash(password,10);
-    console.log("hashedPassword",hashedPassword,)
+    // console.log("hashedPassword",hashedPassword,)
     let message: string = "SUCCESS"
     try {
         await prisma.$transaction(async (tx) => {

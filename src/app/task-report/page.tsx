@@ -88,7 +88,7 @@ export default function TaskReport() {
             selectedEndDate
         );
         const res = await task_details.json();
-        console.log("completedTasks", res);
+        // console.log("completedTasks", res);
         setCompletedTasksObject(res.completedTasks);
         setTotalTaskCount(res.completedTasksCount);
       };
@@ -96,9 +96,9 @@ export default function TaskReport() {
       // call the function
       fetchData().catch(console.error);
     }
-    console.log("staffid", staffid);
-    console.log("selectedStartDate", selectedStartDate);
-    console.log("selectedEndDate", selectedEndDate);
+    // console.log("staffid", staffid);
+    // console.log("selectedStartDate", selectedStartDate);
+    // console.log("selectedEndDate", selectedEndDate);
   }, [staffid, selectedStartDate, selectedEndDate]);
 
   if (status === "loading") {
@@ -168,7 +168,6 @@ export default function TaskReport() {
                           </h4>
                           <h4 className="text-slate-900 text-xl mb-4">
                             <span className="font-semibold">Category: </span>
-                            Category:
                             {obj.categoryname}
                           </h4>
                         </div>

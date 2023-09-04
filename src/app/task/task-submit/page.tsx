@@ -28,19 +28,6 @@ export default function Task() {
 
   const { data: session, status } = useSession();
 
-  if (status === "loading") {
-    return (
-      <div>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (!session) {
-    router.push("/"); // Redirect to login page if not authenticated
-    return null;
-  }
-
   //get pathname
   let pathname: string = "";
 
@@ -48,7 +35,7 @@ export default function Task() {
     pathname = window.location.href;
     // console.log("pathname1", window.location.href);
   } catch (error) {}
-  console.log("pathname", pathname);
+  // console.log("pathname", pathname);
   if (pathname) {
     const r: number = pathname.indexOf("/", 9);
     if (r !== -1) {
@@ -182,6 +169,18 @@ export default function Task() {
     }
   }, [fetchedCategoryDetailsData, taskPhotos]);
 
+  if (status === "loading") {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!session) {
+    router.push("/"); // Redirect to login page if not authenticated
+    return null;
+  }
   return (
     <WithRole roles={["admin", "user"]}>
       <div>

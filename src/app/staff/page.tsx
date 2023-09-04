@@ -29,7 +29,7 @@ export default function Staff() {
       const staff_details = await fetch("api/staff");
       const res = await staff_details.json();
       setStaffRowData(res.staff);
-      console.log("res", res);
+      // console.log("res", res);
     };
 
     // call the function

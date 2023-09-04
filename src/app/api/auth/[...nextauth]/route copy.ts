@@ -23,7 +23,6 @@ const authOptions: NextAuthOptions = {
                             username: credentials?.username
                         },
                     })
-                    console.log("credentials",credentials, user)
                     if (user.length == 0) {
                         return null;
                     }

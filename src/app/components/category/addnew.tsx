@@ -77,7 +77,7 @@ const CategoryAddNew = (params: ParamTypes) => {
     });
 
     const res = await res_new_cat.json();
-    console.log(res);
+    // console.log(res);
 
     if (res == "SUCCESS") {
       setIsOpen(false);

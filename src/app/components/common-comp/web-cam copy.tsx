@@ -20,7 +20,7 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
     // const [taskPhoto, setTaskPhoto] = useState<taskPhotoObjTypes>();
     const format = 'image/jpeg'
     useEffect(() => {
-        console.log("taskphotoid", taskphotoid,)
+        // console.log("taskphotoid", taskphotoid,)
         if (photodataurl) {
             setCapturedImage(photodataurl);
             setShowDelButton(true);
@@ -102,7 +102,7 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         const tmpCategoryDetailId = taskDetails.categorydetailid;
 
 
-        console.log("taskDetails", taskDetails,)
+        // console.log("taskDetails", taskDetails,)
 
         //call for end point
         const response = await fetch(
@@ -115,7 +115,7 @@ const WebcamComponent = ({ taskDetails, taskid, pathname, taskphotoid, photodata
         );
 
         const res = await response.json();
-        console.log(res);
+        // console.log(res);
 
         if (res == "SUCCESS") {
             // if (params.setReloadTable) {

@@ -100,7 +100,7 @@ const StaffAddNew = (params: ParamTypes) => {
     username: string,
     staffid?: number | string
   ) => {
-    console.log("staffid", staffid);
+    // console.log("staffid", staffid);
     // staffid
     const reponse = await fetch(
       "api/staff/username-validation?username=" +
@@ -123,7 +123,7 @@ const StaffAddNew = (params: ParamTypes) => {
       username,
       role,
     });
-    console.log("call addnew");
+    // console.log("call addnew");
     try {
       //check input field empty or not
       if (validation == 0) {

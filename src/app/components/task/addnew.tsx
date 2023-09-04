@@ -169,7 +169,7 @@ const TaskAddNew = (params: ParamTypes) => {
       visitcount,
     });
 
-    console.log("validation", validation > 0);
+    // console.log("validation", validation > 0);
     if (validation == 0) {
       const res_addnew_task = await fetch("api/task", {
         method: "POST",
@@ -184,7 +184,7 @@ const TaskAddNew = (params: ParamTypes) => {
       });
 
       const res = await res_addnew_task.json();
-      console.log(res);
+      // console.log(res);
 
       if (res == "SUCCESS") {
         setIsOpen(false);

@@ -12,7 +12,6 @@ export async function GET(request:Request) {
   });
 
   if (categoriesData.length > 0) {
-console.log(categoriesData,)
 
     res = { message: "SUCCESS", categoriesData }
   } else {

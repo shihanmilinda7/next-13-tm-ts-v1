@@ -39,7 +39,7 @@ export default function Task() {
       const task_details = await fetch("api/task");
       const res = await task_details.json();
       setTaskRowData(res.tasks);
-      console.log("res", res);
+      // console.log("res", res);
     };
 
     // call the function

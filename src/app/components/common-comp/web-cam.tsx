@@ -40,9 +40,9 @@ const WebcamComponent = ({
   // const [taskPhoto, setTaskPhoto] = useState<taskPhotoObjTypes>();
   const format = "image/jpeg";
   useEffect(() => {
-    console.log("taskDetails------------------------");
+    // console.log("taskDetails------------------------");
     if (photodataurl) {
-      console.log("deletedfffffffffffffff");
+      // console.log("deletedfffffffffffffff");
       setCapturedImage(photodataurl);
       setShowDelButton(true);
     } else {
@@ -54,7 +54,7 @@ const WebcamComponent = ({
     if (videoRef.current) {
       const stream = videoRef.current.srcObject as MediaStream;
       if (stream) {
-        console.log("camera off");
+        // console.log("camera off");
         const tracks = stream.getTracks();
         tracks.forEach((track) => track.stop());
       }

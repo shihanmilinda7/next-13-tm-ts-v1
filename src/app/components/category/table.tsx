@@ -9,7 +9,7 @@ export const CategoryTable = ({
   setReloadTable: () => void;
 }) => {
   const tableHeads = ["#", "Category Name", "Photo Types", ""];
-  console.log("ddd", categoryRowData);
+  // console.log("ddd", categoryRowData);
 
   return (
     <div className="md:px-2 py-2 w-full">

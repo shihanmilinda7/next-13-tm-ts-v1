@@ -15,14 +15,14 @@ export async function GET(request: Request) {
 // console.log("staffid",Boolean(staffid),staffid,username)
   // staffid ? console.log("true",staffid):console.log("false",staffid)
   if (staffid == "0" ) {
-    console.log("call 1",)
+    // console.log("call 1",)
     user = await prisma.users.findMany({
       where: {
         username,
       },
     });
   } else {
-    console.log("call 2",)
+    // console.log("call 2",)
 
     user = await prisma.users.findMany({
       where: {
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const { staffname, contracttype, contactno, nic, password, username } = await request.json();
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log("hashedPassword", hashedPassword,)
+  // console.log("hashedPassword", hashedPassword,)
   let message: string = "SUCCESS"
   try {
     await prisma.$transaction(async (tx) => {

@@ -116,7 +116,6 @@ const Login = () => {
               Next Generation Task Monitering{" "}
             </div>
             <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
-              {" "}
               "Discover streamlined productivity with NextTask - the ultimate
               task management solution. Effortlessly create, prioritize, and
               collaborate on tasks. Never miss a deadline again, stay organized,
