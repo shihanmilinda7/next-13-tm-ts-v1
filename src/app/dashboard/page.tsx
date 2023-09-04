@@ -8,6 +8,7 @@ import { signOut, useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import Spinner from "./loading";
+import Link from "next/link";
 
 type TaskDashBoardObj = {
   taskid?: number;
@@ -22,11 +23,34 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
 
   const tmpUser = session?.user;
+  const userRole = session?.user?.role;
 
   const [taskData, setTaskData] = useState<TaskDashBoardObj[]>([]);
   const [staffid, setStaffid] = useState(tmpUser?.staffid);
+  const [staffCount, setStaffCount] = useState("");
+  const [taskCount, setTaskCount] = useState("");
 
-  useEffect(() => {
+  const getStaffDetails = async () => {
+    const fetchData = async () => {
+      const response = await fetch("api/dashboard/get-staff-details");
+      const res = await response.json();
+      setStaffCount(res.totalStaffCount);
+    };
+    // call the function
+    fetchData().catch(console.error);
+  };
+
+  const getTaskDetails = async () => {
+    const fetchData = async () => {
+      const response = await fetch("api/dashboard/get-task-details");
+      const res = await response.json();
+      setTaskCount(res.totalTaskCount);
+    };
+    // call the function
+    fetchData().catch(console.error);
+  };
+
+  const getAssignedTaskDetails = async () => {
     // declare the data fetching function
     const fetchData = async () => {
       const columns = JSON.stringify({ staffid: true });
@@ -42,6 +66,11 @@ export default function Dashboard() {
 
     // call the function
     fetchData().catch(console.error);
+  };
+  useEffect(() => {
+    getStaffDetails();
+    getAssignedTaskDetails();
+    getTaskDetails();
   }, []);
   const taskClickEvent = (task: TaskDashBoardObj) => {
     router.push(
@@ -79,7 +108,13 @@ export default function Dashboard() {
       </h1>
 
       <div className="flex flex-wrap pt-4">
-        <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+        <div
+          className={
+            userRole == "user"
+              ? "mt-4 w-full lg:w-12/12 xl:w-12/12 px-5 mb-4"
+              : "hidden"
+          }
+        >
           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
             <div className="flex-auto p-4">
               <div className="flex flex-wrap">
@@ -143,7 +178,9 @@ export default function Dashboard() {
                             />{" "}
                           </g>
                         </svg>
-                        <h1 className="flex items-center justify-center ml-4">No Asssigned Tasks</h1>
+                        <h1 className="flex items-center justify-center ml-4">
+                          No Asssigned Tasks
+                        </h1>
                       </div>
                     ) : (
                       taskData?.map((task, index) => (
@@ -175,17 +212,58 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4">
+        <div
+          className={
+            userRole == "admin"
+              ? "mt-4 w-full lg:w-6/12 xl:w-6/12 px-5 mb-4"
+              : "hidden"
+          }
+        >
           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
             <div className="flex-auto p-4">
               <div className="flex flex-wrap">
                 <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                  <span className="font-semibold text-xl text-blueGray-700">
-                    Ongoing Tasks
-                  </span>
-                  <h5 className="text-blueGray-400   font-bold text-xs">
-                    Ongoing Tasks
-                  </h5>
+                  <h4 className="font-semibold text-purple-900 text-2xl text-blueGray-700">
+                    Staff Details
+                  </h4>
+                  <h4 className="font-semibold text-xl text-purple-700 text-2xl text-blueGray-700">
+                    Staff Count - {staffCount}
+                  </h4>
+                </div>
+                <div className="relative w-auto pl-4 flex-initial">
+                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-green-500">
+                    <i className="fas fa-chart-bar"></i>
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-blueGray-400 mt-4"></p>
+              <Link
+                href="/staff"
+                className="ml-auto flex justify-center w-1/4 bg-gradient-to-r from-purple-500 to-purple-600 hover:bg-gradient-to-l hover:from-purple-500 hover:to-purple-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+              >
+                View
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={
+            userRole == "admin"
+              ? "mt-4 w-full lg:w-6/12 xl:w-6/12 px-5 mb-4"
+              : "hidden"
+          }
+        >
+          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-3 xl:mb-0 shadow-lg">
+            <div className="flex-auto p-4">
+              <div className="flex flex-wrap">
+                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
+                  <h4 className="font-semibold text-purple-900 text-2xl text-blueGray-700">
+                    Task Details
+                  </h4>
+                  <h4 className="font-semibold text-xl text-purple-700 text-2xl text-blueGray-700">
+                    Task Count - {taskCount}
+                  </h4>
                 </div>
                 <div className="relative w-auto pl-4 flex-initial">
                   <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-red-500">
@@ -193,45 +271,24 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-blueGray-400 mt-4">
-                <span className="text-emerald-500 mr-2">
-                  <i className="fas fa-arrow-up"></i> More...
-                </span>
-                <span className="whitespace-nowrap"> </span>
-              </p>
+              <p className="text-sm text-blueGray-400 mt-4"></p>
+              <Link
+                href="/task"
+                className="ml-auto flex justify-center w-1/4 bg-gradient-to-r from-purple-500 to-purple-600 hover:bg-gradient-to-l hover:from-purple-500 hover:to-purple-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+              >
+                View
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className=" mt-4 w-full lg:w-6/12 xl:w-3/12 px-5">
-          <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-4 xl:mb-0 shadow-lg">
-            <div className="flex-auto p-4">
-              <div className="flex flex-wrap">
-                <div className="relative w-full pr-4 max-w-full flex-grow flex-1">
-                  <span className="font-semibold text-xl text-blueGray-700">
-                    Incomplete Tasks
-                  </span>
-                  <h5 className="text-blueGray-400   font-bold text-xs">
-                    Incomplete Tasks
-                  </h5>
-                </div>
-                <div className="relative w-auto pl-4 flex-initial">
-                  <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 shadow-lg rounded-full  bg-pink-500">
-                    <i className="fas fa-chart-pie"></i>
-                  </div>
-                </div>
-              </div>
-              <p className="text-sm text-blueGray-400 mt-4">
-                <span className="text-red-500 mr-2">
-                  <i className="fas fa-arrow-down"></i> More...
-                </span>
-                <span className="whitespace-nowrap"> </span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 w-full lg:w-6/12 xl:w-3/12 px-5">
+        {/* <div
+          className={
+            userRole == "user"
+              ? "mt-4 w-full lg:w-6/12 xl:w-3/12 px-5 mb-4"
+              : "hidden"
+          }
+        >
           <div className="relative flex flex-col min-w-0 break-words bg-white rounded mb-6 xl:mb-0 shadow-lg">
             <div className="flex-auto p-4">
               <div className="flex flex-wrap">
@@ -257,7 +314,7 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

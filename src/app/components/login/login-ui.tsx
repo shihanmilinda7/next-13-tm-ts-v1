@@ -18,6 +18,16 @@ const Login = () => {
 
   const router = useRouter();
 
+  const handleKeyPress= (event) => {
+    if (event.key === 'Enter') {
+      // Prevent the default behavior of the "Enter" key (e.g., form submission)
+      event.preventDefault();
+
+      // Trigger the button click action on "Enter" key press
+      login(event);
+    }
+  };
+
   const login = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -179,6 +189,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
                     placeholder="Enter your password"
+                    onKeyDown={handleKeyPress}
                   />
                 </div>
                 <div className="flex items-center justify-between mt-10 mb-8">
@@ -188,7 +199,7 @@ const Login = () => {
                     </a>
                   </div>
                 </div>
-                <div className="z-0">
+                <div className="z-0" onKeyDown={handleKeyPress}>
                   <button
                     type="button"
                     onClick={login}

@@ -224,3 +224,7 @@ body {}
     border-radius: 50%;
   }
 }
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
