@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { AiFillSetting, AiOutlineLogout } from "react-icons/ai";
+import UpdatePassword from "../common-comp/update-password";
 
 const Navbar = () => {
   const currentRoute = usePathname();
@@ -45,6 +47,10 @@ const Navbar = () => {
     commonStyles + " overline";
   const nonActiveStyle = commonStyles;
 
+  const dropCommonStyle = "hover:font-bold py-2 px-4 block whitespace-no-wrap ";
+
+  const dropNonActiveStyle =
+    dropCommonStyle + "bg-white text-xs p-4 border border-gray-100 shadow-md";
   // const dropCommonStyle =
   //   "hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap ";
   // const dropActiveStyle = dropCommonStyle + "bg-purple-400";
@@ -314,25 +320,31 @@ const Navbar = () => {
                 </g>
               </svg>
             </div>
-            <div className="dropdown inline-block relative rounded-lg z-50">
-              <button className="md:pt-4 md:pb-4 md:pl-2 block text-indigo-800 hover:font-bold inline-flex">
+            <div className="dropdown inline-block relative rounded-lg z-40">
+              <button className={nonActiveStyle + " inline-flex"}>
                 <span className="mr-1">{userName}</span>
-                {/* <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg> */}
               </button>
               <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
                 <li>
-                  <button
-                    onClick={handleSignOut}
-                    className="z-50 w-full flex justify-center text-gray-700 bg-white p-4 border border-gray-200 shadow-md hover:font-bold p-4  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
-                  >
-                    Logout
-                  </button>
+                  <div className={dropNonActiveStyle + " flex"}>
+                    <span className="text-gray-500 pr-2">
+                      <AiOutlineLogout className="inline-block h-5 w-5" />
+                    </span>
+                    <button
+                      onClick={handleSignOut}
+                      // className={dropNonActiveStyle}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </li>
+                <li>
+                  <div className={dropNonActiveStyle + " flex"}>
+                    <span className="text-gray-500 pr-2">
+                      <AiFillSetting className="inline-block h-5 w-5" />
+                    </span>
+                    <UpdatePassword />
+                  </div>
                 </li>
               </ul>
             </div>
@@ -344,3 +356,25 @@ const Navbar = () => {
 };
 
 export default Navbar;
+// {/* <div className="dropdown inline-block relative rounded-lg z-50">
+//               <button className="md:pt-4 md:pb-4 md:pl-2 block text-indigo-800 hover:font-bold inline-flex">
+//                 <span className="mr-1">{userName}</span>
+//                 {/* <svg
+//                   className="fill-current h-4 w-4"
+//                   xmlns="http://www.w3.org/2000/svg"
+//                   viewBox="0 0 20 20"
+//                 >
+//                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+//                 </svg> */}
+//               </button>
+//               <ul className="dropdown-menu absolute hidden text-gray-700 pt-1">
+//                 <li>
+//                   <button
+//                     onClick={handleSignOut}
+//                     className="z-50 w-full flex justify-center text-gray-700 bg-white p-4 border border-gray-200 shadow-md hover:font-bold p-4  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+//                   >
+//                     Logout
+//                   </button>
+//                 </li>
+//               </ul>
+//             </div> */}

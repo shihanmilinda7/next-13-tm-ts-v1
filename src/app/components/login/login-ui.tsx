@@ -8,6 +8,7 @@ import { UserType } from "../staff/types";
 import Toast from "../common-comp/toast";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { FaKey, FaUser } from "react-icons/fa";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -18,8 +19,8 @@ const Login = () => {
 
   const router = useRouter();
 
-  const handleKeyPress= (event) => {
-    if (event.key === 'Enter') {
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
       // Prevent the default behavior of the "Enter" key (e.g., form submission)
       event.preventDefault();
 
@@ -165,32 +166,42 @@ const Login = () => {
                   <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
                     Username
                   </label>
-                  <input
-                    className=" w-full text-base px-4 py-2 border-b border-gray-300 focus:outline-none rounded-2xl focus:border-indigo-500"
-                    value={username}
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete=""
-                    placeholder="Enter your username"
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
+                  <div className="flex items-center">
+                    <span className="text-gray-500 pr-2">
+                      <FaUser className="inline-block h-5 w-5" />
+                    </span>
+                    <input
+                      className=" w-full text-base px-4 py-2 border-b border-gray-300 focus:outline-none rounded-2xl focus:border-indigo-500"
+                      value={username}
+                      id="username"
+                      name="username"
+                      type="text"
+                      autoComplete=""
+                      placeholder="Enter your username"
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </div>
                 </div>
                 <div className="mt-8 content-center z-50">
                   <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
                     Password
                   </label>
-                  <input
-                    className="z-50 w-full content-center text-base px-4 py-2 border-b rounded-2xl border-gray-300 focus:outline-none focus:border-indigo-500"
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"
-                    placeholder="Enter your password"
-                    onKeyDown={handleKeyPress}
-                  />
+                  <div className="flex items-center">
+                    <span className="text-gray-500 pr-2">
+                      <FaKey className="inline-block h-5 w-5" />
+                    </span>
+                    <input
+                      className="z-50 w-full content-center text-base px-4 py-2 border-b rounded-2xl border-gray-300 focus:outline-none focus:border-indigo-500"
+                      id="password"
+                      name="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
+                      placeholder="Enter your password"
+                      onKeyDown={handleKeyPress}
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center justify-between mt-10 mb-8">
                   <div className="text-sm">

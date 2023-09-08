@@ -8,6 +8,7 @@ import { CategoryDetailObj, CategoryObj } from "./types";
 import CategoryInputField from "./categoty-input-field";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { AiFillEdit, AiFillSetting, AiOutlineLogout } from "react-icons/ai";
 
 type ParamTypes = {
   buttonName: string;
@@ -229,13 +230,18 @@ const CategoryAddNew = (params: ParamTypes) => {
 
   return (
     <div>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
-      >
-        {params.buttonName}
-      </button>
-      {/* <button onClick={() => setIsOpen(true)}>Open Modal</button> */}
+      {params.buttonName == "Edit | Delete" ? (
+        <span className="text-gray-500 pr-2">
+          <AiFillEdit className="inline-block h-5 w-5" onClick={() => setIsOpen(true)}/>
+        </span>
+      ) : (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="flex justify-center bg-gradient-to-r from-purple-500 to-purple-600 hover:bg-gradient-to-l hover:from-purple-500 hover:to-purple-600 text-gray-100 p-2  rounded-lg tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+        >
+          {params.buttonName}
+        </button>
+      )}
       <Modal
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}

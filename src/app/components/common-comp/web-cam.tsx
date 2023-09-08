@@ -5,6 +5,10 @@ import { useState, useEffect, useRef } from "react";
 import { CategoryDetailObj } from "../category/types";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { BsFillCameraFill } from "react-icons/bs";
+import { TbCaptureFilled } from "react-icons/tb";
+import { FaUpload } from "react-icons/fa";
+import { AiFillDelete } from "react-icons/ai";
 
 // type taskPhotoObjTypes = {
 //     taskphotoid?: number;
@@ -193,12 +197,20 @@ const WebcamComponent = ({
   return (
     <div>
       {/* <img src={photodataurl} alt="Captured" /> */}
-      <div className={!cameraActive ? "flex ml-auto" : "flex ml-auto hidden"}>
+      <div
+        className={
+          !cameraActive ? "flex ml-auto w-full" : "flex ml-auto hidden"
+        }
+      >
         <button
           onClick={cameraOnButtonClick}
-          className="w-full rounded-lg bg-gradient-to-r from-green-500 to-green-600  hover:bg-gradient-to-l hover:from-green-500 hover:to-green-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+          className="rounded-lg py-3 px-8 text-center text-base font-semibold outline-none bg-gray-300 flex justify-center items-center w-full"
         >
-          {capturedImage ? "Capture Again" : "Capture"}
+          {capturedImage ? (
+            <BsFillCameraFill color="black " className="inline-block h-8 w-8" />
+          ) : (
+            <BsFillCameraFill className="inline-block h-8 w-8" />
+          )}
         </button>
       </div>
       <div>
@@ -210,9 +222,9 @@ const WebcamComponent = ({
           <video ref={videoRef} autoPlay playsInline />
           <button
             onClick={captureImage}
-            className="mt-3 w-full rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600  hover:bg-gradient-to-l hover:from-indigo-500 hover:to-indigo-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+            className="mt-3 w-full rounded-lg py-3 px-8 text-center text-base font-semibold text-white bg-gray-300 outline-none flex justify-center items-center w-full"
           >
-            Capture
+            <TbCaptureFilled color="black " className="inline-block h-8 w-8" />
           </button>
         </div>
         {capturedImage && !cameraActive && (
@@ -231,9 +243,9 @@ const WebcamComponent = ({
           >
             <button
               onClick={uploadImg}
-              className="mt-3 w-full rounded-lg bg-gradient-to-r from-amber-500 to-amber-600  hover:bg-gradient-to-l hover:from-amber-500 hover:to-amber-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+              className="mt-3 w-full rounded-lg py-3 px-8 text-center text-base font-semibold text-white outline-none flex justify-center items-center w-full"
             >
-              Upload
+              <FaUpload color="black " className="inline-block h-8 w-8" />
             </button>
           </div>
         )}
@@ -245,9 +257,9 @@ const WebcamComponent = ({
           >
             <button
               onClick={deleteImg}
-              className="mt-3 w-full rounded-lg bg-gradient-to-r from-red-500 to-red-600  hover:bg-gradient-to-l hover:from-red-500 hover:to-red-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+              className="mt-3 w-full rounded-lg py-3 px-8 text-center text-base font-semibold text-white outline-none"
             >
-              Delete
+              <AiFillDelete color="black " className="inline-block h-8 w-8" />
             </button>
           </div>
         )}
