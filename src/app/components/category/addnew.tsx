@@ -9,6 +9,7 @@ import CategoryInputField from "./categoty-input-field";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { AiFillEdit, AiFillSetting, AiOutlineLogout } from "react-icons/ai";
+import { inputFieldValidation } from "@/app/utils/utils";
 
 type ParamTypes = {
   buttonName: string;
@@ -67,37 +68,52 @@ const CategoryAddNew = (params: ParamTypes) => {
   //     }
   // }
 
-  //add new category action
-  const inputFieldValidation = () => {};
-
   const addnew = async () => {
-    const res_new_cat = await fetch("api/category", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ categoryname, categoryValues }),
+    const validation = inputFieldValidation({
+      categoryname,
     });
+    try {
+      if (validation == 0) {
+        if (categoryValues.length > 0) {
+          const res_new_cat = await fetch("api/category", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ categoryname, categoryValues }),
+          });
 
-    const res = await res_new_cat.json();
-    // console.log(res);
-
-    if (res == "SUCCESS") {
-      setIsOpen(false);
-      if (params.setReloadTable) {
-        params.setReloadTable();
+          const res = await res_new_cat.json();
+          if (res == "SUCCESS") {
+            setIsOpen(false);
+            if (params.setReloadTable) {
+              params.setReloadTable();
+            }
+            toast.success("Category crated successfully!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            setCategoryname("");
+            setCategoryValues([]);
+          }
+        } else {
+          toast.info(`Please add at least one photo type!`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       }
-      toast.success("Category crated successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setCategoryname("");
-      setCategoryValues([]);
-    } else {
+    } catch (error) {
       toast.error("Error!", {
         position: "top-right",
         autoClose: 3000,
@@ -109,38 +125,56 @@ const CategoryAddNew = (params: ParamTypes) => {
         theme: "light",
       });
     }
-
-    return res;
   };
 
   //update category action
   const update = async () => {
-    const res_update_cat = await fetch("api/category", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ categoryid, categoryname, categoryValues }),
+    const validation = inputFieldValidation({
+      categoryname,
     });
+    try {
+      if (validation == 0) {
+        if (categoryValues.length > 0) {
+          const res_update_cat = await fetch("api/category", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ categoryid, categoryname, categoryValues }),
+          });
 
-    const res = await res_update_cat.json();
+          const res = await res_update_cat.json();
 
-    if (res == "SUCCESS") {
-      setIsOpen(false);
-      if (params.setReloadTable) {
-        params.setReloadTable();
+          if (res == "SUCCESS") {
+            setIsOpen(false);
+            if (params.setReloadTable) {
+              params.setReloadTable();
+            }
+            toast.success("Category updated successfully!", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            setCategoryname("");
+            setCategoryValues([]);
+          }
+        } else {
+          toast.info(`Please add at least one photo type!`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       }
-      toast.success("Category updated successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      setCategoryname("");
-      setCategoryValues([]);
-    } else {
+    } catch (error) {
       toast.error("Error!", {
         position: "top-right",
         autoClose: 3000,
@@ -152,8 +186,6 @@ const CategoryAddNew = (params: ParamTypes) => {
         theme: "light",
       });
     }
-
-    return res;
   };
 
   //delete category action
@@ -232,7 +264,10 @@ const CategoryAddNew = (params: ParamTypes) => {
     <div>
       {params.buttonName == "Edit | Delete" ? (
         <span className="text-gray-500 pr-2">
-          <AiFillEdit className="inline-block h-5 w-5" onClick={() => setIsOpen(true)}/>
+          <AiFillEdit
+            className="inline-block h-5 w-5"
+            onClick={() => setIsOpen(true)}
+          />
         </span>
       ) : (
         <button
